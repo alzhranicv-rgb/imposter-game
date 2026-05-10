@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>لعبة الإمبوستر</title>
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- مكتبة قراءة Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <!-- شاشة البداية -->
+    <section id="setupScreen" class="screen active">
+
+      <div class="hero">
+        <div class="badge">لعبة جماعية</div>
+
+        <h1 class="title">الإمبوستر</h1>
+
+        <p class="subtitle">
+          الكل يعرف الفئة والكلمة، والإمبوستر يعرف الفئة فقط.
+          حاولوا تكتشفونه من الكلام.
+        </p>
+      </div>
+
+      <div class="panel">
+
+        <div class="statusCard">
+          <div class="statusIcon">📁</div>
+          <div>
+            <h3>ملف الكلمات</h3>
+            <p id="fileInfo">جاري تحميل الكلمات...</p>
+          </div>
+        </div>
+
+        <div id="warning" class="warning"></div>
+
+        <div class="formGroup">
+          <label for="playerCount">عدد اللاعبين</label>
+
+          <div class="countRow">
+            <input id="playerCount" type="number" min="3" max="20" value="5" />
+            <button class="secondaryBtn" onclick="createNameInputs()">تحديث الأسماء</button>
+          </div>
+        </div>
+
+        <div class="formGroup">
+          <label>أسماء اللاعبين</label>
+          <div id="playersInputs" class="playersInputs"></div>
+        </div>
+
+        <button class="startBtn" onclick="startGame()">
+          ابدأ اللعبة
+        </button>
+
+      </div>
+
+    </section>
+
+<!-- شاشة اللعب -->
+<section id="gameScreen" class="screen">
+
+  <div class="gameHeader">
+    <div>
+      <div class="roundLabel">الجولة الحالية</div>
+      <h2>اختار اسمك وشوف بطاقتك بسرية</h2>
+    </div>
+
+    <div class="playersCounter">
+      <div class="counterTitle">تمت مشاهدة البطاقات</div>
+
+      <div class="counterNumbers">
+        <span id="viewedCounter">0</span>
+        <span class="counterSlash">/</span>
+        <span id="totalCounter">0</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="instructionBox">
+    اضغط على اسمك فقط، شاهد بطاقتك، ثم اضغط إخفاء وسلّم الجهاز للاعب التالي.
+  </div>
+
+  <div id="cardsGrid" class="cardsGrid"></div>
+
+  <div class="actionsBar">
+    <button class="lightBtn" onclick="resetGame()">رجوع للإعداد</button>
+    <button class="dangerBtn" onclick="revealImposter()">كشف الإمبوستر</button>
+    <button class="primaryBtn" onclick="newRound()">جولة جديدة</button>
+  </div>
+
+</section>
+
+  <!-- شاشة الكلمة السرية -->
+  <div id="secretScreen" class="secretScreen">
+    <div class="secretCard">
+
+      <div class="secretTop">
+        <div id="secretName" class="secretName"></div>
+        <div class="secretHint">لا تخلي أحد يشوف الشاشة</div>
+      </div>
+
+      <div id="secretCategory" class="secretCategory"></div>
+      <div id="secretWord" class="secretWord"></div>
+
+      <button class="hideBtn" onclick="hideSecret()">إخفاء البطاقة</button>
+
+    </div>
+  </div>
+
+  <!-- شاشة كشف الإمبوستر -->
+  <div id="revealScreen" class="revealScreen">
+    <div class="revealCard">
+
+      <div class="revealTitle">كشف الإمبوستر</div>
+
+      <div id="revealName" class="revealName"></div>
+      <div id="revealDetails" class="revealDetails"></div>
+
+      <button class="hideBtn" onclick="closeReveal()">إغلاق</button>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

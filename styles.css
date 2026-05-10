@@ -1,0 +1,750 @@
+@font-face {
+  font-family: "Ambi";
+  src: url("ambi.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Ambi", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+:root {
+  --bg: #F6F3EB;
+  --card: #C9CAAC;
+  --text: #869B7E;
+  --imposter: #7F2020;
+  --dark: #2f332b;
+  --white: #fffdf8;
+  --soft: rgba(134, 155, 126, 0.16);
+  --border: rgba(134, 155, 126, 0.26);
+  --shadow: 0 18px 45px rgba(47, 51, 43, 0.12);
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 18% 8%, rgba(201, 202, 172, 0.55), transparent 30%),
+    radial-gradient(circle at 86% 20%, rgba(134, 155, 126, 0.20), transparent 28%),
+    linear-gradient(180deg, #F6F3EB 0%, #F1EDE2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 14px;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(134, 155, 126, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(134, 155, 126, 0.09) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.app {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 480px);
+  min-height: 100vh;
+  padding: 10px 0 24px;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* =========================
+   الصفحة الرئيسية
+========================= */
+
+.hero {
+  text-align: center;
+  padding: 18px 6px 10px;
+  margin-bottom: 12px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 900;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 22px rgba(47, 51, 43, 0.07);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(54px, 17vw, 78px);
+  line-height: 0.95;
+  font-weight: 1000;
+  letter-spacing: -2px;
+  color: var(--text);
+  text-shadow:
+    0 4px 0 rgba(201, 202, 172, 0.85),
+    0 16px 35px rgba(134, 155, 126, 0.18);
+}
+
+.subtitle {
+  width: min(100%, 370px);
+  margin: 16px auto 0;
+  color: var(--dark);
+  font-size: 17px;
+  line-height: 1.8;
+  font-weight: 800;
+  opacity: 0.82;
+}
+
+.panel {
+  background: rgba(255, 253, 248, 0.72);
+  backdrop-filter: blur(18px);
+  border: 1.5px solid rgba(134, 155, 126, 0.20);
+  border-radius: 34px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+/* =========================
+   حالة ملف الكلمات
+========================= */
+
+.statusCard {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: rgba(201, 202, 172, 0.42);
+  border: 1.5px solid rgba(134, 155, 126, 0.22);
+  border-radius: 24px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.statusIcon {
+  min-width: 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 18px;
+  background: var(--white);
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  box-shadow: 0 8px 20px rgba(47, 51, 43, 0.08);
+}
+
+.statusCard h3 {
+  margin: 0 0 5px;
+  color: var(--dark);
+  font-size: 17px;
+  font-weight: 1000;
+}
+
+.statusCard p {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 900;
+}
+
+/* =========================
+   الفورم والأسماء
+========================= */
+
+.formGroup {
+  margin-top: 18px;
+}
+
+label {
+  display: block;
+  color: var(--dark);
+  font-size: 17px;
+  font-weight: 1000;
+  margin-bottom: 10px;
+  padding-inline: 4px;
+}
+
+.countRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+input {
+  width: 100%;
+  min-height: 56px;
+  border: 2px solid rgba(134, 155, 126, 0.20);
+  border-radius: 20px;
+  padding: 15px 18px;
+  font-size: 18px;
+  font-weight: 900;
+  outline: none;
+  color: var(--dark);
+  background: rgba(255, 253, 248, 0.95);
+  transition: 0.2s ease;
+  box-shadow: inset 0 -3px 0 rgba(134, 155, 126, 0.06);
+}
+
+input::placeholder {
+  color: rgba(47, 51, 43, 0.38);
+  font-weight: 900;
+}
+
+input:focus {
+  border-color: var(--text);
+  background: var(--white);
+  box-shadow:
+    0 0 0 5px rgba(134, 155, 126, 0.13),
+    inset 0 -3px 0 rgba(134, 155, 126, 0.06);
+}
+
+.playersInputs {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.playersInputs input {
+  text-align: center;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(246, 243, 235, 0.9));
+}
+
+/* =========================
+   الأزرار
+========================= */
+
+button {
+  border: 0;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 1000;
+  border-radius: 22px;
+  padding: 15px 20px;
+  transition: 0.18s ease;
+  white-space: nowrap;
+  min-height: 56px;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.secondaryBtn {
+  width: 100%;
+  color: var(--white);
+  background: var(--text);
+  box-shadow: 0 10px 20px rgba(134, 155, 126, 0.18);
+}
+
+.startBtn {
+  width: 100%;
+  margin-top: 22px;
+  color: var(--white);
+  background: var(--text);
+  box-shadow:
+    0 16px 32px rgba(134, 155, 126, 0.24),
+    inset 0 -5px 0 rgba(47, 51, 43, 0.10);
+  min-height: 64px;
+  font-size: 21px;
+}
+
+.startBtn::after {
+  content: "  ←";
+}
+
+.primaryBtn {
+  color: var(--white);
+  background: var(--text);
+}
+
+.dangerBtn {
+  color: var(--white);
+  background: var(--imposter);
+}
+
+.lightBtn {
+  color: var(--dark);
+  background: rgba(255, 253, 248, 0.92);
+  border: 1.5px solid rgba(134, 155, 126, 0.20);
+}
+
+/* =========================
+   التحذير
+========================= */
+
+.warning {
+  display: none;
+  background: rgba(127, 32, 32, 0.08);
+  color: var(--imposter);
+  border: 2px solid rgba(127, 32, 32, 0.18);
+  border-radius: 18px;
+  padding: 13px 16px;
+  font-weight: 1000;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   شاشة اللعب - الهيدر العلوي
+========================= */
+
+.gameHeader {
+  background: rgba(255, 253, 248, 0.86);
+  backdrop-filter: blur(18px);
+  border: 1.5px solid rgba(134, 155, 126, 0.18);
+  border-radius: 34px;
+  padding: 18px 16px 16px;
+  box-shadow:
+    0 18px 45px rgba(47, 51, 43, 0.10),
+    inset 0 -5px 0 rgba(134, 155, 126, 0.05);
+  display: grid;
+  gap: 14px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.gameHeader > div:first-child {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.roundLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  color: var(--dark);
+  border: 1.5px solid rgba(134, 155, 126, 0.22);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 1000;
+  margin: 0;
+  box-shadow: inset 0 -3px 0 rgba(47, 51, 43, 0.06);
+}
+
+.gameHeader h2 {
+  margin: 0;
+  color: var(--dark);
+  font-size: clamp(26px, 7vw, 38px);
+  line-height: 1.25;
+  font-weight: 1000;
+  letter-spacing: -0.5px;
+}
+
+.playersCounter {
+  width: 100%;
+  min-height: 86px;
+  border-radius: 26px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 253, 248, 0.35), transparent 26%),
+    linear-gradient(145deg, #D8D9BD, var(--card));
+  color: var(--dark);
+  font-weight: 1000;
+  box-shadow:
+    inset 0 -5px 0 rgba(47, 51, 43, 0.08),
+    0 10px 24px rgba(47, 51, 43, 0.07);
+  position: relative;
+  overflow: hidden;
+}
+
+.playersCounter::after {
+  content: "";
+  position: absolute;
+  width: 115px;
+  height: 115px;
+  border-radius: 50%;
+  background: rgba(255, 253, 248, 0.22);
+  top: -46px;
+  right: -36px;
+}
+
+.counterTitle {
+  position: relative;
+  z-index: 1;
+  color: rgba(47, 51, 43, 0.58);
+  font-size: 13px;
+  line-height: 1;
+  font-weight: 1000;
+}
+
+.counterNumbers {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: ltr;
+  gap: 8px;
+  color: var(--dark);
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 1000;
+}
+
+.counterNumbers span {
+  display: inline-block;
+}
+
+.counterSlash {
+  color: rgba(47, 51, 43, 0.58);
+  transform: translateY(-1px);
+}
+
+.instructionBox {
+  margin: 0 0 16px;
+  background: rgba(255, 253, 248, 0.78);
+  border: 1.5px solid rgba(134, 155, 126, 0.18);
+  border-radius: 24px;
+  padding: 15px 16px;
+  text-align: center;
+  color: var(--dark);
+  font-size: 17px;
+  line-height: 1.7;
+  font-weight: 1000;
+  box-shadow: 0 10px 25px rgba(47, 51, 43, 0.06);
+}
+/* =========================
+   بطاقات اللاعبين
+========================= */
+
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.playerCard {
+  min-height: 118px;
+  color: var(--dark);
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255, 253, 248, 0.48), transparent 24%),
+    linear-gradient(145deg, #D8D9BD, var(--card));
+  border: 1.5px solid rgba(134, 155, 126, 0.20);
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 18px 12px;
+  font-size: 22px;
+  font-weight: 1000;
+  box-shadow:
+    0 14px 28px rgba(47, 51, 43, 0.10),
+    inset 0 -5px 0 rgba(47, 51, 43, 0.07);
+  position: relative;
+  overflow: hidden;
+}
+
+.playerCard::after {
+  content: "اضغط";
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 11px;
+  font-weight: 1000;
+  color: var(--text);
+  background: rgba(255, 253, 248, 0.42);
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.playerCard.viewed {
+  color: rgba(47, 51, 43, 0.45);
+  background: linear-gradient(145deg, #eeeeE3, #dbdcc9);
+  box-shadow:
+    0 8px 18px rgba(47, 51, 43, 0.07),
+    inset 0 -5px 0 rgba(47, 51, 43, 0.04);
+}
+
+.playerCard.viewed::after {
+  content: "تمت";
+  color: rgba(47, 51, 43, 0.55);
+}
+
+/* =========================
+   أزرار شاشة اللعب
+========================= */
+
+.actionsBar {
+  position: sticky;
+  bottom: 10px;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 10px;
+  background: rgba(246, 243, 235, 0.78);
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(134, 155, 126, 0.16);
+  border-radius: 26px;
+  box-shadow: 0 14px 34px rgba(47, 51, 43, 0.10);
+}
+
+.actionsBar button {
+  width: 100%;
+}
+
+/* =========================
+   نافذة البطاقة السرية
+========================= */
+
+.secretScreen,
+.revealScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  background:
+    radial-gradient(circle at center, rgba(201, 202, 172, 0.32), transparent 38%),
+    rgba(47, 51, 43, 0.72);
+  backdrop-filter: blur(12px);
+}
+
+.secretCard,
+.revealCard {
+  width: min(100%, 430px);
+  background: var(--bg);
+  border: 1.5px solid rgba(255, 253, 248, 0.55);
+  border-radius: 34px;
+  padding: 24px 18px 18px;
+  text-align: center;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+  animation: cardPop 0.25s ease;
+}
+
+@keyframes cardPop {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.secretTop {
+  margin-bottom: 14px;
+}
+
+.secretName {
+  color: var(--dark);
+  font-size: 28px;
+  line-height: 1.3;
+  font-weight: 1000;
+}
+
+.secretHint {
+  margin-top: 7px;
+  color: rgba(47, 51, 43, 0.58);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.secretCategory {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 1.5px solid rgba(134, 155, 126, 0.25);
+  color: var(--dark);
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-size: 20px;
+  font-weight: 1000;
+  margin: 6px 0 18px;
+  max-width: 100%;
+}
+
+.secretWord {
+  min-height: 88px;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  background: rgba(255, 253, 248, 0.72);
+  border: 1.5px solid rgba(134, 155, 126, 0.14);
+  border-radius: 26px;
+  font-size: clamp(34px, 10vw, 54px);
+  line-height: 1.25;
+  font-weight: 1000;
+  margin: 10px 0 18px;
+  padding: 14px;
+}
+
+.secretWord.imposterWord {
+  color: var(--imposter);
+  background: rgba(127, 32, 32, 0.08);
+  border-color: rgba(127, 32, 32, 0.18);
+}
+
+.hideBtn {
+  width: 100%;
+  min-height: 60px;
+  color: var(--white);
+  background: var(--dark);
+  box-shadow: 0 12px 24px rgba(47, 51, 43, 0.18);
+}
+
+/* =========================
+   كشف الإمبوستر
+========================= */
+
+.revealTitle {
+  display: inline-block;
+  background: rgba(127, 32, 32, 0.10);
+  color: var(--imposter);
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: 16px;
+  font-weight: 1000;
+  margin-bottom: 16px;
+}
+
+.revealName {
+  color: var(--imposter);
+  font-size: clamp(38px, 12vw, 58px);
+  line-height: 1.2;
+  font-weight: 1000;
+  margin-bottom: 14px;
+}
+
+.revealDetails {
+  background: rgba(255, 253, 248, 0.70);
+  border: 1.5px solid rgba(134, 155, 126, 0.16);
+  border-radius: 24px;
+  padding: 16px;
+  color: var(--dark);
+  font-size: 19px;
+  line-height: 1.9;
+  font-weight: 1000;
+  margin-bottom: 18px;
+}
+
+/* =========================
+   تحسينات iPhone
+========================= */
+
+@media (max-width: 430px) {
+  body {
+    padding: 10px;
+  }
+
+  .app {
+    width: 100%;
+    padding-top: 4px;
+  }
+
+  .hero {
+    padding-top: 12px;
+  }
+
+  .title {
+    font-size: 64px;
+  }
+
+  .subtitle {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .panel {
+    border-radius: 30px;
+    padding: 14px;
+  }
+
+  .statusCard {
+    border-radius: 22px;
+  }
+
+  .statusIcon {
+    min-width: 46px;
+    width: 46px;
+    height: 46px;
+  }
+
+  input,
+  button {
+    min-height: 54px;
+  }
+
+  .playersInputs {
+    grid-template-columns: 1fr;
+  }
+
+  .playerCard {
+    min-height: 108px;
+    border-radius: 24px;
+    font-size: 21px;
+  }
+
+  .secretCard,
+  .revealCard {
+    border-radius: 30px;
+  }
+}
+
+@media (min-width: 520px) {
+  .app {
+    width: min(100%, 720px);
+  }
+
+  .countRow {
+    grid-template-columns: 1fr auto;
+  }
+
+  .secondaryBtn {
+    width: auto;
+  }
+
+  .playersInputs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .actionsBar {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
