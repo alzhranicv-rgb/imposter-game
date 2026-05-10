@@ -5,6 +5,9 @@ let players = []
 let imposterIndex = null
 let currentViewedIndex = null
 
+let turnDrawRunning = false
+let turnDrawTimer = null
+
 const FIXED_PLAYERS_STORAGE_KEY = "imposter_fixed_players_v2"
 
 /* =========================
@@ -42,7 +45,6 @@ async function loadExcelFromProject() {
       allItems = allItems.concat(sheetItems)
     })
 
-    // نخلي كل الصفوف بدون حذف التكرار عشان يظهر العدد كامل
     wordsList = allItems
 
     if (wordsList.length === 0) {
@@ -54,11 +56,9 @@ async function loadExcelFromProject() {
     fileInfo.textContent = `تم تحميل ${wordsList.length} كلمة تلقائيًا`
     hideWarning()
 
-    console.log("الكلمات المحملة:", wordsList)
-
   } catch (error) {
     fileInfo.textContent = "تعذر تحميل ملف الكلمات"
-    showWarning("تأكد أن ملف categorized_words.xlsx موجود بجانب index.html وأنك مشغل المشروع عبر Live Server أو GitHub Pages")
+    showWarning("تأكد أن ملف categorized_words.xlsx موجود بجانب index.html")
     console.error(error)
   }
 }
@@ -126,6 +126,7 @@ function getDefaultFixedPlayers() {
     "ابو عزة",
     "محمد سالم",
     "ابو ميلا",
+    "محمد عبدالله",
     "نايف"
   ]
 }
@@ -266,6 +267,8 @@ function startGame() {
 
   renderCards()
   updateCounter()
+  resetTurnBox()
+  updateGameButtons()
 
   showScreen("gameScreen")
 }
@@ -290,12 +293,10 @@ function showSecret(index) {
 
   const player = players[index]
 
-  const secretName = document.getElementById("secretName")
-  const secretCategory = document.getElementById("secretCategory")
-  const secretWord = document.getElementById("secretWord")
+  document.getElementById("secretName").textContent = player.name
+  document.getElementById("secretCategory").textContent = `الفئة: ${player.category}`
 
-  secretName.textContent = player.name
-  secretCategory.textContent = `الفئة: ${player.category}`
+  const secretWord = document.getElementById("secretWord")
 
   if (player.isImposter) {
     secretWord.textContent = "أنت الإمبوستر"
@@ -319,6 +320,125 @@ function hideSecret() {
 
   renderCards()
   updateCounter()
+  updateGameButtons()
+}
+
+/* =========================
+   قرعة الدور
+========================= */
+
+function startTurnDraw() {
+  if (!players.length || turnDrawRunning) return
+
+  const screen = document.getElementById("turnDrawScreen")
+  const nameBox = document.getElementById("turnDrawName")
+  const hint = document.getElementById("turnDrawHint")
+  const closeBtn = document.getElementById("closeTurnDrawBtn")
+
+  if (!screen || !nameBox || !hint || !closeBtn) return
+
+  turnDrawRunning = true
+
+  screen.style.display = "flex"
+  nameBox.classList.remove("winner")
+  closeBtn.classList.add("hidden")
+  hint.textContent = "جاري اختيار اللاعب..."
+
+  let index = 0
+  let loops = 0
+
+  if (turnDrawTimer) {
+    clearInterval(turnDrawTimer)
+  }
+
+  turnDrawTimer = setInterval(() => {
+    nameBox.textContent = players[index].name
+
+    index++
+
+    if (index >= players.length) {
+      index = 0
+      loops++
+    }
+
+    if (loops >= 5) {
+      clearInterval(turnDrawTimer)
+      turnDrawTimer = null
+
+      const winnerIndex = Math.floor(Math.random() * players.length)
+      const winner = players[winnerIndex]
+
+      setTimeout(() => {
+        nameBox.textContent = winner.name
+        nameBox.classList.add("winner")
+        hint.textContent = "الدور عليه"
+        closeBtn.classList.remove("hidden")
+        turnDrawRunning = false
+      }, 280)
+    }
+  }, 65)
+}
+
+function closeTurnDrawScreen() {
+  if (turnDrawRunning) return
+
+  const screen = document.getElementById("turnDrawScreen")
+
+  if (screen) {
+    screen.style.display = "none"
+  }
+}
+
+function resetTurnBox() {
+  const screen = document.getElementById("turnDrawScreen")
+  const nameBox = document.getElementById("turnDrawName")
+  const hint = document.getElementById("turnDrawHint")
+  const closeBtn = document.getElementById("closeTurnDrawBtn")
+
+  if (turnDrawTimer) {
+    clearInterval(turnDrawTimer)
+    turnDrawTimer = null
+  }
+
+  turnDrawRunning = false
+
+  if (screen) screen.style.display = "none"
+
+  if (nameBox) {
+    nameBox.textContent = "جاهز؟"
+    nameBox.classList.remove("winner")
+  }
+
+  if (hint) {
+    hint.textContent = "انتظر حتى تتوقف القرعة"
+  }
+
+  if (closeBtn) {
+    closeBtn.classList.add("hidden")
+  }
+}
+
+/* =========================
+   أزرار نهاية الجولة
+========================= */
+
+function updateGameButtons() {
+  const revealBtn = document.getElementById("revealBtn")
+  const newRoundBtn = document.getElementById("newRoundBtn")
+  const resetBtn = document.getElementById("resetBtn")
+
+  if (!revealBtn || !newRoundBtn || !resetBtn) return
+
+  const allViewed = players.length > 0 && players.every((player) => player.viewed)
+
+  if (allViewed) {
+    revealBtn.classList.remove("hidden")
+  } else {
+    revealBtn.classList.add("hidden")
+  }
+
+  newRoundBtn.classList.add("hidden")
+  resetBtn.classList.add("hidden")
 }
 
 function revealImposter() {
@@ -335,6 +455,14 @@ function revealImposter() {
   `
 
   document.getElementById("revealScreen").style.display = "flex"
+
+  const revealBtn = document.getElementById("revealBtn")
+  const newRoundBtn = document.getElementById("newRoundBtn")
+  const resetBtn = document.getElementById("resetBtn")
+
+  if (revealBtn) revealBtn.classList.add("hidden")
+  if (newRoundBtn) newRoundBtn.classList.remove("hidden")
+  if (resetBtn) resetBtn.classList.remove("hidden")
 }
 
 function closeReveal() {
@@ -365,6 +493,8 @@ function newRound() {
   renderCards()
   updateCounter()
   closeReveal()
+  resetTurnBox()
+  updateGameButtons()
 }
 
 function resetGame() {
@@ -376,9 +506,15 @@ function resetGame() {
   document.getElementById("secretScreen").style.display = "none"
   document.getElementById("revealScreen").style.display = "none"
 
+  resetTurnBox()
+  updateGameButtons()
   renderFixedPlayers()
   showScreen("setupScreen")
 }
+
+/* =========================
+   أدوات عامة
+========================= */
 
 function updateCounter() {
   const viewed = players.filter((player) => player.viewed).length

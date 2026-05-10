@@ -9,6 +9,7 @@
 * {
   box-sizing: border-box;
   font-family: "Ambi", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
 :root {
@@ -18,7 +19,6 @@
   --imposter: #7F2020;
   --dark: #2f332b;
   --white: #fffdf8;
-  --soft: rgba(134, 155, 126, 0.16);
   --border: rgba(134, 155, 126, 0.26);
   --shadow: 0 18px 45px rgba(47, 51, 43, 0.12);
 }
@@ -40,7 +40,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 14px;
+  padding: 10px;
   overflow-x: hidden;
 }
 
@@ -49,8 +49,8 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(134, 155, 126, 0.09) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(134, 155, 126, 0.09) 1px, transparent 1px);
+    linear-gradient(rgba(134, 155, 126, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(134, 155, 126, 0.08) 1px, transparent 1px);
   background-size: 32px 32px;
   pointer-events: none;
   opacity: 0.8;
@@ -61,7 +61,7 @@ body::before {
   z-index: 1;
   width: min(100%, 480px);
   min-height: 100vh;
-  padding: 10px 0 24px;
+  padding: 4px 0 22px;
 }
 
 .screen {
@@ -72,14 +72,18 @@ body::before {
   display: block;
 }
 
+.hidden {
+  display: none !important;
+}
+
 /* =========================
    الصفحة الرئيسية
 ========================= */
 
 .hero {
   text-align: center;
-  padding: 18px 6px 10px;
-  margin-bottom: 12px;
+  padding: 12px 6px 10px;
+  margin-bottom: 10px;
 }
 
 .badge {
@@ -111,25 +115,25 @@ body::before {
 
 .subtitle {
   width: min(100%, 370px);
-  margin: 16px auto 0;
+  margin: 14px auto 0;
   color: var(--dark);
-  font-size: 17px;
-  line-height: 1.8;
+  font-size: 16px;
+  line-height: 1.75;
   font-weight: 800;
   opacity: 0.82;
 }
 
 .panel {
-  background: rgba(255, 253, 248, 0.72);
+  background: rgba(255, 253, 248, 0.76);
   backdrop-filter: blur(18px);
   border: 1.5px solid rgba(134, 155, 126, 0.20);
-  border-radius: 34px;
-  padding: 16px;
+  border-radius: 30px;
+  padding: 14px;
   box-shadow: var(--shadow);
 }
 
 /* =========================
-   حالة ملف الكلمات
+   ملف الكلمات
 ========================= */
 
 .statusCard {
@@ -138,25 +142,25 @@ body::before {
   align-items: center;
   background: rgba(201, 202, 172, 0.42);
   border: 1.5px solid rgba(134, 155, 126, 0.22);
-  border-radius: 24px;
-  padding: 14px;
-  margin-bottom: 16px;
+  border-radius: 22px;
+  padding: 13px;
+  margin-bottom: 15px;
 }
 
 .statusIcon {
-  min-width: 50px;
-  width: 50px;
-  height: 50px;
-  border-radius: 18px;
+  min-width: 46px;
+  width: 46px;
+  height: 46px;
+  border-radius: 17px;
   background: var(--white);
   display: grid;
   place-items: center;
-  font-size: 25px;
+  font-size: 24px;
   box-shadow: 0 8px 20px rgba(47, 51, 43, 0.08);
 }
 
 .statusCard h3 {
-  margin: 0 0 5px;
+  margin: 0 0 4px;
   color: var(--dark);
   font-size: 17px;
   font-weight: 1000;
@@ -171,11 +175,11 @@ body::before {
 }
 
 /* =========================
-   الفورم واللاعبين
+   فورم اللاعبين
 ========================= */
 
 .formGroup {
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
 label {
@@ -183,17 +187,17 @@ label {
   color: var(--dark);
   font-size: 17px;
   font-weight: 1000;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   padding-inline: 4px;
 }
 
 input {
   width: 100%;
-  min-height: 56px;
+  min-height: 54px;
   border: 2px solid rgba(134, 155, 126, 0.20);
   border-radius: 20px;
-  padding: 15px 18px;
-  font-size: 18px;
+  padding: 14px 16px;
+  font-size: 17px;
   font-weight: 900;
   outline: none;
   color: var(--dark);
@@ -247,7 +251,7 @@ input:focus {
 
 .addFixedPlayerBox {
   display: grid;
-  grid-template-columns: 1fr 92px;
+  grid-template-columns: 1fr;
   gap: 8px;
   margin-bottom: 14px;
 }
@@ -256,16 +260,10 @@ input:focus {
   text-align: center;
 }
 
-.addFixedPlayerBox button {
-  width: 100%;
-  min-height: 56px;
-  padding-inline: 10px;
-}
-
 .fixedPlayersList {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 9px;
 }
 
 .fixedPlayerItem {
@@ -315,14 +313,10 @@ button {
   font-size: 17px;
   font-weight: 1000;
   border-radius: 22px;
-  padding: 15px 20px;
+  padding: 14px 18px;
   transition: 0.18s ease;
   white-space: nowrap;
-  min-height: 56px;
-}
-
-button:hover {
-  transform: translateY(-1px);
+  min-height: 54px;
 }
 
 button:active {
@@ -338,7 +332,7 @@ button:active {
 
 .startBtn {
   width: 100%;
-  margin-top: 22px;
+  margin-top: 20px;
   color: var(--white);
   background: var(--text);
   box-shadow:
@@ -381,26 +375,26 @@ button:active {
   padding: 13px 16px;
   font-weight: 1000;
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
 }
 
 /* =========================
-   شاشة اللعب - الهيدر العلوي
+   شاشة اللعب
 ========================= */
 
 .gameHeader {
   background: rgba(255, 253, 248, 0.86);
   backdrop-filter: blur(18px);
   border: 1.5px solid rgba(134, 155, 126, 0.18);
-  border-radius: 34px;
-  padding: 18px 16px 16px;
+  border-radius: 30px;
+  padding: 16px 14px;
   box-shadow:
     0 18px 45px rgba(47, 51, 43, 0.10),
     inset 0 -5px 0 rgba(134, 155, 126, 0.05);
   display: grid;
-  gap: 14px;
+  gap: 13px;
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 13px;
 }
 
 .gameHeader > div:first-child {
@@ -428,7 +422,7 @@ button:active {
 .gameHeader h2 {
   margin: 0;
   color: var(--dark);
-  font-size: clamp(26px, 7vw, 38px);
+  font-size: clamp(25px, 7vw, 36px);
   line-height: 1.25;
   font-weight: 1000;
   letter-spacing: -0.5px;
@@ -436,8 +430,8 @@ button:active {
 
 .playersCounter {
   width: 100%;
-  min-height: 86px;
-  border-radius: 26px;
+  min-height: 82px;
+  border-radius: 25px;
   display: grid;
   place-items: center;
   align-content: center;
@@ -488,27 +482,9 @@ button:active {
   font-weight: 1000;
 }
 
-.counterNumbers span {
-  display: inline-block;
-}
-
 .counterSlash {
   color: rgba(47, 51, 43, 0.58);
   transform: translateY(-1px);
-}
-
-.instructionBox {
-  margin: 0 0 16px;
-  background: rgba(255, 253, 248, 0.78);
-  border: 1.5px solid rgba(134, 155, 126, 0.18);
-  border-radius: 24px;
-  padding: 15px 16px;
-  text-align: center;
-  color: var(--dark);
-  font-size: 17px;
-  line-height: 1.7;
-  font-weight: 1000;
-  box-shadow: 0 10px 25px rgba(47, 51, 43, 0.06);
 }
 
 /* =========================
@@ -518,22 +494,22 @@ button:active {
 .cardsGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 11px;
 }
 
 .playerCard {
-  min-height: 118px;
+  min-height: 108px;
   color: var(--dark);
   background:
     radial-gradient(circle at 28% 18%, rgba(255, 253, 248, 0.48), transparent 24%),
     linear-gradient(145deg, #D8D9BD, var(--card));
   border: 1.5px solid rgba(134, 155, 126, 0.20);
-  border-radius: 28px;
+  border-radius: 24px;
   display: grid;
   place-items: center;
   text-align: center;
-  padding: 18px 12px;
-  font-size: 22px;
+  padding: 18px 10px;
+  font-size: 21px;
   font-weight: 1000;
   box-shadow:
     0 14px 28px rgba(47, 51, 43, 0.10),
@@ -545,13 +521,13 @@ button:active {
 .playerCard::after {
   content: "اضغط";
   position: absolute;
-  bottom: 10px;
-  left: 10px;
+  bottom: 9px;
+  left: 9px;
   font-size: 11px;
   font-weight: 1000;
   color: var(--text);
   background: rgba(255, 253, 248, 0.42);
-  padding: 5px 10px;
+  padding: 5px 9px;
   border-radius: 999px;
 }
 
@@ -569,19 +545,128 @@ button:active {
 }
 
 /* =========================
-   أزرار شاشة اللعب
+   زر قرعة الدور
+========================= */
+
+.turnBox {
+  margin: 14px 0 0;
+}
+
+.drawTurnBtn {
+  width: 100%;
+  color: var(--white);
+  background: var(--dark);
+  box-shadow:
+    0 12px 24px rgba(47, 51, 43, 0.16),
+    inset 0 -5px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* =========================
+   شاشة قرعة الدور
+========================= */
+
+.turnDrawScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  background:
+    radial-gradient(circle at center, rgba(201, 202, 172, 0.38), transparent 38%),
+    rgba(47, 51, 43, 0.78);
+  backdrop-filter: blur(14px);
+}
+
+.turnDrawCard {
+  width: min(100%, 430px);
+  min-height: 330px;
+  background: var(--bg);
+  border: 1.5px solid rgba(255, 253, 248, 0.55);
+  border-radius: 34px;
+  padding: 24px 18px 18px;
+  text-align: center;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  animation: cardPop 0.25s ease;
+}
+
+.turnDrawTitle {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  background: var(--card);
+  color: var(--dark);
+  border: 1.5px solid rgba(134, 155, 126, 0.25);
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-size: 17px;
+  font-weight: 1000;
+}
+
+.turnDrawName {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 253, 248, 0.48), transparent 28%),
+    linear-gradient(145deg, #D8D9BD, var(--card));
+  border: 1.5px solid rgba(134, 155, 126, 0.18);
+  border-radius: 30px;
+  padding: 18px;
+  font-size: clamp(38px, 12vw, 62px);
+  line-height: 1.2;
+  font-weight: 1000;
+  box-shadow:
+    0 16px 36px rgba(47, 51, 43, 0.12),
+    inset 0 -6px 0 rgba(47, 51, 43, 0.07);
+}
+
+.turnDrawName.winner {
+  color: var(--imposter);
+  animation: winnerPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes winnerPulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.06);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.turnDrawHint {
+  color: rgba(47, 51, 43, 0.62);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+/* =========================
+   أزرار نهاية الجولة
 ========================= */
 
 .actionsBar {
   position: sticky;
   bottom: 10px;
   z-index: 5;
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 14px;
   padding: 10px;
-  background: rgba(246, 243, 235, 0.78);
+  background: rgba(246, 243, 235, 0.82);
   backdrop-filter: blur(16px);
   border: 1.5px solid rgba(134, 155, 126, 0.16);
   border-radius: 26px;
@@ -590,10 +675,28 @@ button:active {
 
 .actionsBar button {
   width: 100%;
+  max-width: 220px;
+}
+
+.actionsBar:has(#revealBtn:not(.hidden)) {
+  justify-content: center;
+}
+
+.actionsBar:has(#revealBtn:not(.hidden)) #revealBtn {
+  max-width: 250px;
+}
+
+.actionsBar:has(#newRoundBtn:not(.hidden)) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.actionsBar:has(#newRoundBtn:not(.hidden)) button {
+  max-width: none;
 }
 
 /* =========================
-   نافذة البطاقة السرية
+   النوافذ
 ========================= */
 
 .secretScreen,
@@ -616,7 +719,7 @@ button:active {
   width: min(100%, 430px);
   background: var(--bg);
   border: 1.5px solid rgba(255, 253, 248, 0.55);
-  border-radius: 34px;
+  border-radius: 30px;
   padding: 24px 18px 18px;
   text-align: center;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
@@ -733,71 +836,16 @@ button:active {
 }
 
 /* =========================
-   تحسينات iPhone
+   شاشات أكبر
 ========================= */
-
-@media (max-width: 430px) {
-  body {
-    padding: 10px;
-  }
-
-  .app {
-    width: 100%;
-    padding-top: 4px;
-  }
-
-  .hero {
-    padding-top: 12px;
-  }
-
-  .title {
-    font-size: 64px;
-  }
-
-  .subtitle {
-    font-size: 16px;
-    line-height: 1.75;
-  }
-
-  .panel {
-    border-radius: 30px;
-    padding: 14px;
-  }
-
-  .statusCard {
-    border-radius: 22px;
-  }
-
-  .statusIcon {
-    min-width: 46px;
-    width: 46px;
-    height: 46px;
-  }
-
-  input,
-  button {
-    min-height: 54px;
-  }
-
-  .addFixedPlayerBox {
-    grid-template-columns: 1fr;
-  }
-
-  .playerCard {
-    min-height: 108px;
-    border-radius: 24px;
-    font-size: 21px;
-  }
-
-  .secretCard,
-  .revealCard {
-    border-radius: 30px;
-  }
-}
 
 @media (min-width: 520px) {
   .app {
     width: min(100%, 720px);
+  }
+
+  .addFixedPlayerBox {
+    grid-template-columns: 1fr 100px;
   }
 
   .cardsGrid {
@@ -805,6 +853,39 @@ button:active {
   }
 
   .actionsBar {
-    grid-template-columns: repeat(3, 1fr);
+    max-width: 520px;
+    margin-inline: auto;
+  }
+}
+
+/* =========================
+   iPhone صغير
+========================= */
+
+@media (max-width: 390px) {
+  body {
+    padding: 8px;
+  }
+
+  .title {
+    font-size: 58px;
+  }
+
+  .subtitle {
+    font-size: 15px;
+  }
+
+  .panel,
+  .gameHeader {
+    border-radius: 26px;
+  }
+
+  .playerCard {
+    min-height: 102px;
+    font-size: 20px;
+  }
+
+  .turnDrawName {
+    font-size: 38px;
   }
 }
