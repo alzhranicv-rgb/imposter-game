@@ -8,7 +8,11 @@ let currentViewedIndex = null
 let turnDrawRunning = false
 let turnDrawTimer = null
 
-const FIXED_PLAYERS_STORAGE_KEY = "imposter_fixed_players_v2"
+let usedWordKeys = []
+
+const FIXED_PLAYERS_STORAGE_KEY = "imposter_fixed_players_v3"
+const USED_WORDS_STORAGE_KEY = "imposter_used_words_v1"
+const GAME_SETTINGS_STORAGE_KEY = "imposter_game_settings_v1"
 
 /* =========================
    تحميل ملف Excel
@@ -46,6 +50,7 @@ async function loadExcelFromProject() {
     })
 
     wordsList = allItems
+    loadUsedWords()
 
     if (wordsList.length === 0) {
       fileInfo.textContent = "لم يتم تحميل كلمات"
@@ -110,9 +115,50 @@ function isHeaderText(value) {
   )
 }
 
+/* =========================
+   اختيار الكلمات بدون تكرار
+========================= */
+
+function getWordKey(item) {
+  return `${item.category}__${item.word}`
+}
+
+function loadUsedWords() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(USED_WORDS_STORAGE_KEY) || "[]")
+
+    if (Array.isArray(saved)) {
+      usedWordKeys = saved
+    }
+  } catch {
+    usedWordKeys = []
+  }
+}
+
+function saveUsedWords() {
+  localStorage.setItem(USED_WORDS_STORAGE_KEY, JSON.stringify(usedWordKeys))
+}
+
 function getRandomItem() {
-  const randomIndex = Math.floor(Math.random() * wordsList.length)
-  return wordsList[randomIndex]
+  if (wordsList.length === 0) return null
+
+  let availableWords = wordsList.filter((item) => {
+    return !usedWordKeys.includes(getWordKey(item))
+  })
+
+  if (availableWords.length === 0) {
+    usedWordKeys = []
+    saveUsedWords()
+    availableWords = [...wordsList]
+  }
+
+  const randomIndex = Math.floor(Math.random() * availableWords.length)
+  const selected = availableWords[randomIndex]
+
+  usedWordKeys.push(getWordKey(selected))
+  saveUsedWords()
+
+  return selected
 }
 
 /* =========================
@@ -126,8 +172,8 @@ function getDefaultFixedPlayers() {
     "ابو عزة",
     "محمد سالم",
     "ابو ميلا",
-    "محمد عبدالله",
-    "نايف"
+    "نايف",
+    "محمد عبدالله"
   ]
 }
 
@@ -230,6 +276,52 @@ function deleteFixedPlayer(index) {
 }
 
 /* =========================
+   إعدادات اللعبة
+========================= */
+
+function getDefaultGameSettings() {
+  return {
+    showCategoryForImposter: true
+  }
+}
+
+function getGameSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(GAME_SETTINGS_STORAGE_KEY) || "null")
+
+    if (saved && typeof saved === "object") {
+      return {
+        ...getDefaultGameSettings(),
+        ...saved
+      }
+    }
+  } catch (error) {
+    console.warn("تعذر قراءة إعدادات اللعبة", error)
+  }
+
+  return getDefaultGameSettings()
+}
+
+function saveGameSettings() {
+  const checkbox = document.getElementById("showCategoryForImposter")
+
+  const settings = {
+    showCategoryForImposter: checkbox ? checkbox.checked : true
+  }
+
+  localStorage.setItem(GAME_SETTINGS_STORAGE_KEY, JSON.stringify(settings))
+}
+
+function applyGameSettingsToUI() {
+  const settings = getGameSettings()
+  const checkbox = document.getElementById("showCategoryForImposter")
+
+  if (checkbox) {
+    checkbox.checked = settings.showCategoryForImposter
+  }
+}
+
+/* =========================
    بداية اللعبة
 ========================= */
 
@@ -247,6 +339,12 @@ function startGame() {
   }
 
   selectedItem = getRandomItem()
+
+  if (!selectedItem) {
+    showWarning("تعذر اختيار كلمة")
+    return
+  }
+
   players = []
 
   names.forEach((name) => {
@@ -292,16 +390,29 @@ function showSecret(index) {
   currentViewedIndex = index
 
   const player = players[index]
+  const settings = getGameSettings()
 
-  document.getElementById("secretName").textContent = player.name
-  document.getElementById("secretCategory").textContent = `الفئة: ${player.category}`
-
+  const secretName = document.getElementById("secretName")
+  const secretCategory = document.getElementById("secretCategory")
   const secretWord = document.getElementById("secretWord")
+
+  secretName.textContent = player.name
 
   if (player.isImposter) {
     secretWord.textContent = "أنت الإمبوستر"
     secretWord.classList.add("imposterWord")
+
+    if (settings.showCategoryForImposter) {
+      secretCategory.textContent = `الفئة: ${player.category}`
+      secretCategory.style.display = "inline-flex"
+    } else {
+      secretCategory.textContent = ""
+      secretCategory.style.display = "none"
+    }
   } else {
+    secretCategory.textContent = `الفئة: ${player.category}`
+    secretCategory.style.display = "inline-flex"
+
     secretWord.textContent = player.word
     secretWord.classList.remove("imposterWord")
   }
@@ -474,6 +585,11 @@ function newRound() {
 
   selectedItem = getRandomItem()
 
+  if (!selectedItem) {
+    showWarning("تعذر اختيار كلمة")
+    return
+  }
+
   players = players.map((player) => {
     return {
       name: player.name,
@@ -551,4 +667,5 @@ function hideWarning() {
 ========================= */
 
 renderFixedPlayers()
+applyGameSettingsToUI()
 loadExcelFromProject()

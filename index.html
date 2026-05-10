@@ -25,8 +25,7 @@
         <h1 class="title">الإمبوستر</h1>
 
         <p class="subtitle">
-          الكل يعرف الفئة والكلمة، والإمبوستر يعرف الفئة فقط.
-          حاولوا تكتشفونه من الكلام.
+          الكل يعرف الفئة والكلمة، والإمبوستر يحاول يسايرهم بدون ما ينكشف.
         </p>
       </div>
 
@@ -41,13 +40,30 @@
           </div>
         </div>
 
+        <div class="settingCard">
+          <div>
+            <h3>إظهار الفئة للإمبوستر</h3>
+            
+          </div>
+
+          <label class="switch">
+            <input
+              id="showCategoryForImposter"
+              type="checkbox"
+              checked
+              onchange="saveGameSettings()"
+            >
+            <span class="slider"></span>
+          </label>
+        </div>
+
         <div id="warning" class="warning"></div>
 
         <div class="formGroup">
           <div class="playersHeader">
             <div>
               <label>قائمة اللاعبين</label>
-              <p class="playersNote">الأسماء ثابتة، وتقدر تضيف أو تحذف منها</p>
+              <p class="playersNote">الأسماء</p>
             </div>
 
             <div id="playersCountBadge" class="playersCountBadge">0 لاعبين</div>
@@ -79,7 +95,7 @@
         </div>
 
         <div class="playersCounter">
-          <div class="counterTitle">دن</div>
+          <div class="counterTitle">تمت مشاهدة البطاقات</div>
 
           <div class="counterNumbers">
             <span id="viewedCounter">0</span>
@@ -93,7 +109,7 @@
 
       <div class="turnBox">
         <button class="drawTurnBtn" onclick="startTurnDraw()">
-           القرعة
+          القرعة
         </button>
       </div>
 
@@ -150,7 +166,7 @@
     </div>
   </div>
 
-  <!-- شاشة قرعة الدور -->
+  <!-- شاشة القرعة -->
   <div id="turnDrawScreen" class="turnDrawScreen" onclick="closeTurnDrawScreen()">
     <div class="turnDrawCard" onclick="event.stopPropagation()">
 
