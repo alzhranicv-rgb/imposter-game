@@ -5,6 +5,12 @@ let players = []
 let imposterIndex = null
 let currentViewedIndex = null
 
+const FIXED_PLAYERS_STORAGE_KEY = "imposter_fixed_players_v2"
+
+/* =========================
+   تحميل ملف Excel
+========================= */
+
 async function loadExcelFromProject() {
   const fileInfo = document.getElementById("fileInfo")
 
@@ -36,6 +42,7 @@ async function loadExcelFromProject() {
       allItems = allItems.concat(sheetItems)
     })
 
+    // نخلي كل الصفوف بدون حذف التكرار عشان يظهر العدد كامل
     wordsList = allItems
 
     if (wordsList.length === 0) {
@@ -51,7 +58,7 @@ async function loadExcelFromProject() {
 
   } catch (error) {
     fileInfo.textContent = "تعذر تحميل ملف الكلمات"
-    showWarning("تأكد أن ملف categorized_words.xlsx موجود بجانب index.html وأنك مشغل المشروع عبر Live Server")
+    showWarning("تأكد أن ملف categorized_words.xlsx موجود بجانب index.html وأنك مشغل المشروع عبر Live Server أو GitHub Pages")
     console.error(error)
   }
 }
@@ -103,79 +110,145 @@ function isHeaderText(value) {
   )
 }
 
-function removeDuplicateWords(items) {
-  const unique = []
-  const seen = new Set()
-
-  items.forEach((item) => {
-    const key = `${item.category}-${item.word}`
-
-    if (seen.has(key)) return
-
-    seen.add(key)
-    unique.push(item)
-  })
-
-  return unique
-}
-
 function getRandomItem() {
   const randomIndex = Math.floor(Math.random() * wordsList.length)
   return wordsList[randomIndex]
 }
 
-function createNameInputs() {
-  const countInput = document.getElementById("playerCount")
-  const playersInputs = document.getElementById("playersInputs")
+/* =========================
+   اللاعبين الثابتين
+========================= */
 
-  const count = Number(countInput.value)
-
-  hideWarning()
-  playersInputs.innerHTML = ""
-
-  if (!count || count < 3) {
-    showWarning("لازم يكون عدد اللاعبين 3 أو أكثر")
-    return
-  }
-
-  if (count > 20) {
-    showWarning("الحد الأعلى 20 لاعب")
-    countInput.value = 20
-    return
-  }
-
-  for (let i = 0; i < count; i++) {
-    const input = document.createElement("input")
-
-    input.type = "text"
-    input.placeholder = `اسم اللاعب ${i + 1}`
-    input.id = `playerName${i}`
-    input.autocomplete = "off"
-
-    playersInputs.appendChild(input)
-  }
+function getDefaultFixedPlayers() {
+  return [
+    "امبارك",
+    "مشاري",
+    "ابو عزة",
+    "محمد سالم",
+    "ابو ميلا",
+    "نايف"
+  ]
 }
 
+function getFixedPlayers() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(FIXED_PLAYERS_STORAGE_KEY) || "null")
+
+    if (Array.isArray(saved) && saved.length > 0) {
+      return saved
+    }
+  } catch (error) {
+    console.warn("تعذر قراءة قائمة اللاعبين", error)
+  }
+
+  return getDefaultFixedPlayers()
+}
+
+function saveFixedPlayers(names) {
+  localStorage.setItem(FIXED_PLAYERS_STORAGE_KEY, JSON.stringify(names))
+}
+
+function renderFixedPlayers() {
+  const list = document.getElementById("fixedPlayersList")
+  const badge = document.getElementById("playersCountBadge")
+
+  const names = getFixedPlayers()
+
+  list.innerHTML = ""
+
+  names.forEach((name, index) => {
+    const item = document.createElement("div")
+    item.className = "fixedPlayerItem"
+
+    const nameEl = document.createElement("div")
+    nameEl.className = "fixedPlayerName"
+    nameEl.textContent = name
+
+    const deleteBtn = document.createElement("button")
+    deleteBtn.type = "button"
+    deleteBtn.className = "deleteFixedPlayerBtn"
+    deleteBtn.textContent = "×"
+    deleteBtn.onclick = () => deleteFixedPlayer(index)
+
+    item.appendChild(nameEl)
+    item.appendChild(deleteBtn)
+
+    list.appendChild(item)
+  })
+
+  badge.textContent = `${names.length} لاعبين`
+}
+
+function addFixedPlayer() {
+  hideWarning()
+
+  const input = document.getElementById("newPlayerName")
+  const newName = input.value.trim()
+
+  if (!newName) {
+    showWarning("اكتب اسم اللاعب أولًا")
+    return
+  }
+
+  const names = getFixedPlayers()
+
+  if (names.length >= 20) {
+    showWarning("الحد الأعلى 20 لاعب")
+    return
+  }
+
+  const alreadyExists = names.some((name) => {
+    return name.trim() === newName
+  })
+
+  if (alreadyExists) {
+    showWarning("هذا الاسم موجود مسبقًا")
+    return
+  }
+
+  names.push(newName)
+  saveFixedPlayers(names)
+
+  input.value = ""
+  renderFixedPlayers()
+}
+
+function deleteFixedPlayer(index) {
+  hideWarning()
+
+  const names = getFixedPlayers()
+
+  if (names.length <= 3) {
+    showWarning("لازم يبقى عندك 3 لاعبين على الأقل")
+    return
+  }
+
+  names.splice(index, 1)
+  saveFixedPlayers(names)
+  renderFixedPlayers()
+}
+
+/* =========================
+   بداية اللعبة
+========================= */
+
 function startGame() {
-  const count = Number(document.getElementById("playerCount").value)
+  const names = getFixedPlayers()
 
   if (wordsList.length === 0) {
     showWarning("ملف الكلمات لم يتم تحميله بعد")
     return
   }
 
+  if (names.length < 3) {
+    showWarning("لازم يكون عدد اللاعبين 3 أو أكثر")
+    return
+  }
+
   selectedItem = getRandomItem()
   players = []
 
-  for (let i = 0; i < count; i++) {
-    const input = document.getElementById(`playerName${i}`)
-    const name = input ? input.value.trim() : ""
-
-    if (!name) {
-      showWarning(`اكتب اسم اللاعب رقم ${i + 1}`)
-      return
-    }
-
+  names.forEach((name) => {
     players.push({
       name,
       category: selectedItem.category,
@@ -184,7 +257,7 @@ function startGame() {
       isImposter: false,
       viewed: false
     })
-  }
+  })
 
   imposterIndex = Math.floor(Math.random() * players.length)
 
@@ -303,6 +376,7 @@ function resetGame() {
   document.getElementById("secretScreen").style.display = "none"
   document.getElementById("revealScreen").style.display = "none"
 
+  renderFixedPlayers()
   showScreen("setupScreen")
 }
 
@@ -336,5 +410,9 @@ function hideWarning() {
   warning.style.display = "none"
 }
 
-createNameInputs()
+/* =========================
+   تشغيل أولي
+========================= */
+
+renderFixedPlayers()
 loadExcelFromProject()

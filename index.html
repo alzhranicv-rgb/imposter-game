@@ -43,17 +43,21 @@
         <div id="warning" class="warning"></div>
 
         <div class="formGroup">
-          <label for="playerCount">عدد اللاعبين</label>
+          <div class="playersHeader">
+            <div>
+              <label>قائمة اللاعبين الثابتة</label>
+              <p class="playersNote">الأسماء محفوظة، وتقدر تضيف أو تحذف منها</p>
+            </div>
 
-          <div class="countRow">
-            <input id="playerCount" type="number" min="3" max="20" value="5" />
-            <button class="secondaryBtn" onclick="createNameInputs()">تحديث الأسماء</button>
+            <div id="playersCountBadge" class="playersCountBadge">0 لاعبين</div>
           </div>
-        </div>
 
-        <div class="formGroup">
-          <label>أسماء اللاعبين</label>
-          <div id="playersInputs" class="playersInputs"></div>
+          <div class="addFixedPlayerBox">
+            <input id="newPlayerName" type="text" placeholder="اكتب اسم لاعب جديد" />
+            <button class="secondaryBtn" onclick="addFixedPlayer()">إضافة</button>
+          </div>
+
+          <div id="fixedPlayersList" class="fixedPlayersList"></div>
         </div>
 
         <button class="startBtn" onclick="startGame()">
@@ -64,39 +68,41 @@
 
     </section>
 
-<!-- شاشة اللعب -->
-<section id="gameScreen" class="screen">
+    <!-- شاشة اللعب -->
+    <section id="gameScreen" class="screen">
 
-  <div class="gameHeader">
-    <div>
-      <div class="roundLabel">الجولة الحالية</div>
-      <h2>اختار اسمك وشوف بطاقتك بسرية</h2>
-    </div>
+      <div class="gameHeader">
+        <div>
+          <div class="roundLabel">الجولة الحالية</div>
+          <h2>اختار اسمك وشوف بطاقتك بسرية</h2>
+        </div>
 
-    <div class="playersCounter">
-      <div class="counterTitle">تمت مشاهدة البطاقات</div>
+        <div class="playersCounter">
+          <div class="counterTitle">تمت مشاهدة البطاقات</div>
 
-      <div class="counterNumbers">
-        <span id="viewedCounter">0</span>
-        <span class="counterSlash">/</span>
-        <span id="totalCounter">0</span>
+          <div class="counterNumbers">
+            <span id="viewedCounter">0</span>
+            <span class="counterSlash">/</span>
+            <span id="totalCounter">0</span>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <div class="instructionBox">
-    اضغط على اسمك فقط، شاهد بطاقتك، ثم اضغط إخفاء وسلّم الجهاز للاعب التالي.
-  </div>
+      <div class="instructionBox">
+        اضغط على اسمك فقط، شاهد بطاقتك، ثم اضغط إخفاء وسلّم الجهاز للاعب التالي.
+      </div>
 
-  <div id="cardsGrid" class="cardsGrid"></div>
+      <div id="cardsGrid" class="cardsGrid"></div>
 
-  <div class="actionsBar">
-    <button class="lightBtn" onclick="resetGame()">رجوع للإعداد</button>
-    <button class="dangerBtn" onclick="revealImposter()">كشف الإمبوستر</button>
-    <button class="primaryBtn" onclick="newRound()">جولة جديدة</button>
-  </div>
+      <div class="actionsBar">
+        <button class="lightBtn" onclick="resetGame()">رجوع للإعداد</button>
+        <button class="dangerBtn" onclick="revealImposter()">كشف الإمبوستر</button>
+        <button class="primaryBtn" onclick="newRound()">جولة جديدة</button>
+      </div>
 
-</section>
+    </section>
+
+  </main>
 
   <!-- شاشة الكلمة السرية -->
   <div id="secretScreen" class="secretScreen">

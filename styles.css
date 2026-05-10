@@ -171,7 +171,7 @@ body::before {
 }
 
 /* =========================
-   الفورم والأسماء
+   الفورم واللاعبين
 ========================= */
 
 .formGroup {
@@ -185,12 +185,6 @@ label {
   font-weight: 1000;
   margin-bottom: 10px;
   padding-inline: 4px;
-}
-
-.countRow {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
 }
 
 input {
@@ -221,17 +215,94 @@ input:focus {
     inset 0 -3px 0 rgba(134, 155, 126, 0.06);
 }
 
-.playersInputs {
+.playersHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.playersHeader label {
+  margin-bottom: 4px;
+}
+
+.playersNote {
+  margin: 0;
+  color: rgba(47, 51, 43, 0.55);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.playersCountBadge {
+  background: var(--card);
+  color: var(--dark);
+  border: 1.5px solid rgba(134, 155, 126, 0.22);
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 13px;
+  font-weight: 1000;
+  white-space: nowrap;
+}
+
+.addFixedPlayerBox {
+  display: grid;
+  grid-template-columns: 1fr 92px;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.addFixedPlayerBox input {
+  text-align: center;
+}
+
+.addFixedPlayerBox button {
+  width: 100%;
+  min-height: 56px;
+  padding-inline: 10px;
+}
+
+.fixedPlayersList {
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
 }
 
-.playersInputs input {
-  text-align: center;
-  border-radius: 22px;
+.fixedPlayerItem {
+  min-height: 58px;
   background:
-    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(246, 243, 235, 0.9));
+    linear-gradient(145deg, rgba(255, 253, 248, 0.95), rgba(201, 202, 172, 0.35));
+  border: 1.5px solid rgba(134, 155, 126, 0.20);
+  border-radius: 20px;
+  padding: 8px 10px;
+  display: grid;
+  grid-template-columns: 1fr 48px;
+  align-items: center;
+  gap: 8px;
+  box-shadow:
+    0 8px 18px rgba(47, 51, 43, 0.06),
+    inset 0 -3px 0 rgba(47, 51, 43, 0.04);
+}
+
+.fixedPlayerName {
+  color: var(--dark);
+  font-size: 18px;
+  font-weight: 1000;
+  text-align: center;
+}
+
+.deleteFixedPlayerBtn {
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+  border-radius: 16px;
+  color: var(--white);
+  background: var(--imposter);
+  font-size: 25px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
 }
 
 /* =========================
@@ -439,6 +510,7 @@ button:active {
   font-weight: 1000;
   box-shadow: 0 10px 25px rgba(47, 51, 43, 0.06);
 }
+
 /* =========================
    بطاقات اللاعبين
 ========================= */
@@ -707,7 +779,7 @@ button:active {
     min-height: 54px;
   }
 
-  .playersInputs {
+  .addFixedPlayerBox {
     grid-template-columns: 1fr;
   }
 
@@ -726,18 +798,6 @@ button:active {
 @media (min-width: 520px) {
   .app {
     width: min(100%, 720px);
-  }
-
-  .countRow {
-    grid-template-columns: 1fr auto;
-  }
-
-  .secondaryBtn {
-    width: auto;
-  }
-
-  .playersInputs {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .cardsGrid {
