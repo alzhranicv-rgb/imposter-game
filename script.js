@@ -894,9 +894,15 @@ function renderCards() {
 }
 
 function showSecret(index) {
+  const player = players[index]
+
+  // يمنع فتح البطاقة إذا تمت مشاهدتها
+  if (!player || player.viewed) {
+    return
+  }
+
   currentViewedIndex = index
 
-  const player = players[index]
   const settings = getGameSettings()
 
   const secretName = document.getElementById("secretName")
@@ -910,14 +916,14 @@ function showSecret(index) {
     secretWord.classList.add("imposterWord")
 
     if (settings.showCategoryForImposter) {
-      secretCategory.textContent = ` ${player.category}`
+      secretCategory.textContent = `الفئة: ${player.category}`
       secretCategory.style.display = "inline-flex"
     } else {
       secretCategory.textContent = ""
       secretCategory.style.display = "none"
     }
   } else {
-    secretCategory.textContent = ` ${player.category}`
+    secretCategory.textContent = `الفئة: ${player.category}`
     secretCategory.style.display = "inline-flex"
 
     secretWord.textContent = player.word

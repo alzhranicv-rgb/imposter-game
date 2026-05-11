@@ -578,11 +578,18 @@ button:active {
   gap: 8px;
 }
 
+.roundTopRow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
 .homeRoundBtn {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  min-height: 34px;
   padding: 0;
   border-radius: 999px;
   display: grid;
@@ -590,10 +597,10 @@ button:active {
   background: var(--card);
   color: var(--dark);
   border: 1.5px solid rgba(134, 155, 126, 0.22);
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
   box-shadow:
-    0 8px 18px rgba(47, 51, 43, 0.08),
+    0 6px 14px rgba(47, 51, 43, 0.08),
     inset 0 -3px 0 rgba(47, 51, 43, 0.06);
 }
 
@@ -1043,46 +1050,245 @@ button:active {
    iPhone صغير
 ========================= */
 
-@media (max-width: 390px) {
+@media (max-width: 430px) {
   body {
-    padding: 8px;
+    padding: 7px;
+  }
+
+  .app {
+    padding: 2px 0 14px;
+  }
+
+  .hero {
+    padding: 6px 4px 6px;
+    margin-bottom: 7px;
+  }
+
+  .badge {
+    padding: 7px 14px;
+    font-size: 13px;
+    margin-bottom: 9px;
   }
 
   .title {
-    font-size: 58px;
+    font-size: 52px;
+    line-height: 0.9;
   }
 
   .subtitle {
-    font-size: 15px;
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.55;
   }
 
-  .panel,
-  .gameHeader {
-    border-radius: 26px;
+  .panel {
+    padding: 10px;
+    border-radius: 24px;
   }
 
-  .playerCard {
-    min-height: 102px;
-    font-size: 20px;
+  .statusCard {
+    padding: 10px;
+    border-radius: 18px;
+    margin-bottom: 9px;
   }
 
-  .turnDrawName {
-    font-size: 38px;
+  .statusIcon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 14px;
+    font-size: 21px;
   }
 
   .settingsGrid {
     gap: 7px;
+    margin-bottom: 9px;
   }
 
   .settingCard {
-    padding: 10px 8px;
+    padding: 9px 7px;
+    border-radius: 18px;
+    gap: 7px;
   }
 
   .settingCard h3 {
-    font-size: 14px;
+    font-size: 13px;
+    margin-bottom: 3px;
   }
 
   .settingCard p {
-    font-size: 11px;
+    font-size: 10.5px;
+    line-height: 1.35;
+  }
+
+  .switch {
+    width: 52px;
+    min-width: 52px;
+    height: 30px;
+  }
+
+  .slider::before {
+    width: 24px;
+    height: 24px;
+  }
+
+  .switch input:checked + .slider::before {
+    transform: translateX(-22px);
+  }
+
+  .formGroup {
+    margin-top: 10px;
+  }
+
+  .playersHeader {
+    margin-bottom: 8px;
+  }
+
+  label {
+    font-size: 15px;
+    margin-bottom: 5px;
+  }
+
+  .playersNote {
+    font-size: 11.5px;
+  }
+
+  .playersCountBadge {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  input {
+    min-height: 48px;
+    font-size: 15px;
+    border-radius: 17px;
+    padding: 12px 14px;
+  }
+
+  button {
+    min-height: 48px;
+    font-size: 15px;
+    border-radius: 18px;
+    padding: 12px 14px;
+  }
+
+  .fixedPlayersList {
+    gap: 7px;
+  }
+
+  .fixedPlayerItem {
+    min-height: 50px;
+    border-radius: 17px;
+    padding: 6px 8px;
+    grid-template-columns: 1fr 42px;
+  }
+
+  .fixedPlayerName {
+    font-size: 16px;
+  }
+
+  .deleteFixedPlayerBtn {
+    width: 42px;
+    height: 42px;
+    min-height: 42px;
+    border-radius: 14px;
+    font-size: 23px;
+  }
+
+  .startBtn {
+    min-height: 56px;
+    margin-top: 14px;
+    font-size: 19px;
+  }
+
+  .gameHeader {
+    padding: 11px;
+    border-radius: 24px;
+    gap: 9px;
+    margin-bottom: 9px;
+  }
+
+  .roundLabel {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+
+  .gameHeader h2 {
+    font-size: 24px;
+    line-height: 1.18;
+  }
+
+  .playersCounter {
+    min-height: 68px;
+    border-radius: 21px;
+    gap: 5px;
+  }
+
+  .counterTitle {
+    font-size: 12px;
+  }
+
+  .counterNumbers {
+    font-size: 29px;
+  }
+
+  .cardsGrid {
+    gap: 8px;
+  }
+
+  .playerCard {
+    min-height: 92px;
+    border-radius: 20px;
+    font-size: 19px;
+    padding: 14px 8px;
+  }
+
+  .turnBox {
+    margin-top: 10px;
+  }
+
+  .votingPanel {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  .votingHeader {
+    margin-bottom: 10px;
+  }
+
+  .votingHeader h3 {
+    font-size: 22px;
+  }
+
+  .votingHeader p {
+    font-size: 12.5px;
+  }
+
+  .votingChoices {
+    gap: 7px;
+  }
+
+  .voteChoiceBtn {
+    min-height: 48px;
+    font-size: 14px;
+    border-radius: 15px;
+  }
+
+  .nextVoteBtn {
+    margin-top: 9px;
+  }
+
+  .actionsBar {
+    margin-top: 10px;
+    padding: 7px;
+    gap: 6px;
+    border-radius: 20px;
+  }
+
+  .actionsBar button {
+    min-height: 48px;
+    font-size: 13px;
+    border-radius: 15px;
   }
 }
