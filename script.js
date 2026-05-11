@@ -909,7 +909,7 @@ function showSecret(index) {
       secretCategory.style.display = "none"
     }
   } else {
-    secretCategory.textContent = `الفئة: ${player.category}`
+    secretCategory.textContent = ` ${player.category}`
     secretCategory.style.display = "inline-flex"
 
     secretWord.textContent = player.word
