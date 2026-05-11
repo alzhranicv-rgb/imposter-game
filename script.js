@@ -5,6 +5,8 @@ let players = []
 let imposterIndex = null
 let currentViewedIndex = null
 
+let lastRoundLabelTapTime = 0
+
 let turnDrawRunning = false
 let turnDrawTimer = null
 let turnDrawDone = false
@@ -19,6 +21,7 @@ let scores = {}
 let imposterRevealed = false
 let roundScored = false
 let currentVoteIndex = 0
+
 
 const FIXED_PLAYERS_STORAGE_KEY = "imposter_fixed_players_v3"
 const USED_WORDS_STORAGE_KEY = "imposter_used_words_v1"
@@ -1199,8 +1202,16 @@ renderFixedPlayers()
 renderScoreBoard()
 showScreen("setupScreen")
 }
-function quickRestartGame() {
-  resetGame()
+function handleRoundLabelTap() {
+  const now = Date.now()
+
+  if (now - lastRoundLabelTapTime <= 450) {
+    lastRoundLabelTapTime = 0
+    resetGame()
+    return
+  }
+
+  lastRoundLabelTapTime = now
 }
 /* =========================
    أدوات عامة
@@ -1220,16 +1231,6 @@ function showScreen(screenId) {
   })
 
   document.getElementById(screenId).classList.add("active")
-
-  const quickRestartBtn = document.getElementById("quickRestartBtn")
-
-  if (quickRestartBtn) {
-    if (screenId === "gameScreen") {
-      quickRestartBtn.classList.remove("hidden")
-    } else {
-      quickRestartBtn.classList.add("hidden")
-    }
-  }
 }
 
 function showWarning(text) {

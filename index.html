@@ -106,7 +106,9 @@
 
       <div class="gameHeader">
         <div>
-          <div class="roundLabel">الجولة الحالية</div>
+          <div class="roundLabel" onclick="handleRoundLabelTap()">
+  الجولة الحالية
+</div>
           <h2 id="gameStageTitle">اختار اسمك وشوف بطاقتك بسرية</h2>
         </div>
 
@@ -237,9 +239,7 @@
 
     </div>
   </div>
-  <button id="quickRestartBtn" class="quickRestartBtn hidden" onclick="quickRestartGame()" aria-label="تحديث اللعبة">
-  ↻
-</button>
+  
 
   <script src="script.js"></script>
 
