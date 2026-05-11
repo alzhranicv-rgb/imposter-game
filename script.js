@@ -230,14 +230,14 @@ function updateGameStageAfterRestore() {
   if (!turnDrawDone && !imposterRevealed) {
     if (turnBox) turnBox.classList.remove("hidden")
     if (drawTurnBtn) drawTurnBtn.classList.remove("hidden")
-    if (gameStageTitle) gameStageTitle.textContent = "اضغط القرعة قبل التصويت"
+    if (gameStageTitle) gameStageTitle.textContent = "اضغط القرعة "
     return
   }
 
   if (turnDrawDone && !votingStarted && !imposterRevealed) {
     if (turnBox) turnBox.classList.remove("hidden")
     if (startVotingBtn) startVotingBtn.classList.remove("hidden")
-    if (gameStageTitle) gameStageTitle.textContent = "انتهت القرعة، ابدأ التصويت"
+    if (gameStageTitle) gameStageTitle.textContent = "ابدأ التصويت"
     return
   }
 
@@ -641,6 +641,9 @@ function calculateRoundScores() {
 
   if (settings.enableVoting) {
     Object.keys(votes).forEach((voterName) => {
+      // صوت الإمبوستر لا يُحسب نهائيًا
+      if (voterName === imposterName) return
+
       if (votes[voterName] === imposterName) {
         correctVoters.push(voterName)
       }
@@ -827,7 +830,7 @@ function renderCards() {
       }
 
       if (gameStageTitle) {
-        gameStageTitle.textContent 
+        gameStageTitle.textContent = "ابدأ القرعة "
       }
     }
 
@@ -843,7 +846,7 @@ function renderCards() {
       }
 
       if (gameStageTitle) {
-        gameStageTitle.textContent = "انتهت القرعة، ابدأ التصويت"
+        gameStageTitle.textContent = "ابدأ التصويت"
       }
     }
 
@@ -1041,7 +1044,7 @@ function closeTurnDrawScreen() {
     if (turnBox) turnBox.classList.remove("hidden")
     if (drawTurnBtn) drawTurnBtn.classList.add("hidden")
     if (startVotingBtn) startVotingBtn.classList.remove("hidden")
-    if (gameStageTitle) gameStageTitle.textContent = "انتهت القرعة، ابدأ التصويت"
+    if (gameStageTitle) gameStageTitle.textContent = "ابدأ التصويت"
   }
 
   saveGameState()
