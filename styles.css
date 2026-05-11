@@ -571,7 +571,35 @@ button:active {
 .roundLabel:active {
   transform: scale(0.96);
 }
+.roundTopRow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
 
+.homeRoundBtn {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  color: var(--dark);
+  border: 1.5px solid rgba(134, 155, 126, 0.22);
+  font-size: 18px;
+  line-height: 1;
+  box-shadow:
+    0 8px 18px rgba(47, 51, 43, 0.08),
+    inset 0 -3px 0 rgba(47, 51, 43, 0.06);
+}
+
+.homeRoundBtn:active {
+  transform: scale(0.92);
+}
 /* =========================
    البطاقات
 ========================= */
@@ -624,7 +652,10 @@ button:active {
 .playerCard.viewed::after {
   content: "دن";
 }
-
+.playerCard:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
 /* =========================
    القرعة
 ========================= */

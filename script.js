@@ -878,14 +878,19 @@ function renderCards() {
   cardsGrid.innerHTML = ""
 
   players.forEach((player, index) => {
-    const card = document.createElement("button")
+  const card = document.createElement("button")
 
-    card.className = `playerCard ${player.viewed ? "viewed" : ""}`
-    card.textContent = player.viewed ? `${player.name} ✓` : player.name
+  card.className = `playerCard ${player.viewed ? "viewed" : ""}`
+  card.textContent = player.viewed ? `${player.name} ✓` : player.name
+
+  if (player.viewed) {
+    card.disabled = true
+  } else {
     card.onclick = () => showSecret(index)
+  }
 
-    cardsGrid.appendChild(card)
-  })
+  cardsGrid.appendChild(card)
+})
 }
 
 function showSecret(index) {
