@@ -902,7 +902,7 @@ function showSecret(index) {
     secretWord.classList.add("imposterWord")
 
     if (settings.showCategoryForImposter) {
-      secretCategory.textContent = `الفئة: ${player.category}`
+      secretCategory.textContent = ` ${player.category}`
       secretCategory.style.display = "inline-flex"
     } else {
       secretCategory.textContent = ""
@@ -1192,14 +1192,16 @@ function resetGame() {
   document.getElementById("secretScreen").style.display = "none"
   document.getElementById("revealScreen").style.display = "none"
 
-  closeScoreBoard()
-  resetTurnBox()
-  clearGameState()
-  renderFixedPlayers()
-  renderScoreBoard()
-  showScreen("setupScreen")
+closeScoreBoard()
+resetTurnBox()
+clearGameState()
+renderFixedPlayers()
+renderScoreBoard()
+showScreen("setupScreen")
 }
-
+function quickRestartGame() {
+  resetGame()
+}
 /* =========================
    أدوات عامة
 ========================= */
@@ -1218,6 +1220,16 @@ function showScreen(screenId) {
   })
 
   document.getElementById(screenId).classList.add("active")
+
+  const quickRestartBtn = document.getElementById("quickRestartBtn")
+
+  if (quickRestartBtn) {
+    if (screenId === "gameScreen") {
+      quickRestartBtn.classList.remove("hidden")
+    } else {
+      quickRestartBtn.classList.add("hidden")
+    }
+  }
 }
 
 function showWarning(text) {
