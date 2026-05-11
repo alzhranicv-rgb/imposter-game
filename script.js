@@ -7,12 +7,23 @@ let currentViewedIndex = null
 
 let turnDrawRunning = false
 let turnDrawTimer = null
+let turnDrawDone = false
+let votingStarted = false
+let turnDrawPool = []
+let lastTurnWinnerName = ""
 
 let usedWordKeys = []
+
+let votes = {}
+let scores = {}
+let imposterRevealed = false
+let roundScored = false
+let currentVoteIndex = 0
 
 const FIXED_PLAYERS_STORAGE_KEY = "imposter_fixed_players_v3"
 const USED_WORDS_STORAGE_KEY = "imposter_used_words_v1"
 const GAME_SETTINGS_STORAGE_KEY = "imposter_game_settings_v1"
+const GAME_STATE_STORAGE_KEY = "imposter_live_game_state_v1"
 
 /* =========================
    تحميل ملف Excel
@@ -60,6 +71,8 @@ async function loadExcelFromProject() {
 
     fileInfo.textContent = `تم تحميل ${wordsList.length} كلمة تلقائيًا`
     hideWarning()
+
+    restoreGameState()
 
   } catch (error) {
     fileInfo.textContent = "تعذر تحميل ملف الكلمات"
@@ -113,6 +126,133 @@ function isHeaderText(value) {
     text === "الوصف" ||
     text === "description"
   )
+}
+
+/* =========================
+   حفظ واستعادة حالة اللعبة
+========================= */
+
+function saveGameState() {
+  if (!players || players.length === 0 || !selectedItem) return
+
+  const state = {
+  selectedItem,
+  players,
+  imposterIndex,
+  votes,
+  scores,
+  imposterRevealed,
+  roundScored,
+  currentVoteIndex,
+  turnDrawDone,
+  votingStarted,
+  turnDrawPool,
+  lastTurnWinnerName
+}
+
+  localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(state))
+}
+
+function clearGameState() {
+  localStorage.removeItem(GAME_STATE_STORAGE_KEY)
+}
+
+function restoreGameState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(GAME_STATE_STORAGE_KEY) || "null")
+
+    if (!saved || !Array.isArray(saved.players) || saved.players.length === 0) {
+      renderFixedPlayers()
+      applyGameSettingsToUI()
+      showScreen("setupScreen")
+      return
+    }
+
+    selectedItem = saved.selectedItem || null
+    players = saved.players || []
+    imposterIndex = typeof saved.imposterIndex === "number" ? saved.imposterIndex : null
+    votes = saved.votes || {}
+    scores = saved.scores || {}
+    imposterRevealed = !!saved.imposterRevealed
+    roundScored = !!saved.roundScored
+    currentVoteIndex = Number(saved.currentVoteIndex || 0)
+    turnDrawDone = !!saved.turnDrawDone
+    votingStarted = !!saved.votingStarted
+    turnDrawPool = Array.isArray(saved.turnDrawPool) ? saved.turnDrawPool : []
+    lastTurnWinnerName = saved.lastTurnWinnerName || ""
+
+    renderFixedPlayers()
+    applyGameSettingsToUI()
+    showScreen("gameScreen")
+    renderRestoredGame()
+
+  } catch (error) {
+    console.warn("تعذر استعادة حالة اللعبة", error)
+    clearGameState()
+    showScreen("setupScreen")
+  }
+}
+
+function renderRestoredGame() {
+  const secretScreen = document.getElementById("secretScreen")
+  const revealScreen = document.getElementById("revealScreen")
+  const scoreScreen = document.getElementById("scoreScreen")
+
+  if (secretScreen) secretScreen.style.display = "none"
+  if (revealScreen) revealScreen.style.display = "none"
+  if (scoreScreen) scoreScreen.style.display = "none"
+
+  renderCards()
+  updateCounter()
+  renderScoreBoard()
+  updateGameStageAfterRestore()
+  updateGameButtons()
+}
+
+function updateGameStageAfterRestore() {
+  const gameStageTitle = document.getElementById("gameStageTitle")
+  const turnBox = document.getElementById("turnBox")
+  const drawTurnBtn = document.getElementById("drawTurnBtn")
+  const startVotingBtn = document.getElementById("startVotingBtn")
+  const votingPanel = document.getElementById("votingPanel")
+  const settings = getGameSettings()
+
+  if (turnBox) turnBox.classList.add("hidden")
+  if (drawTurnBtn) drawTurnBtn.classList.add("hidden")
+  if (startVotingBtn) startVotingBtn.classList.add("hidden")
+  if (votingPanel) votingPanel.classList.add("hidden")
+
+  if (!areAllCardsViewed()) {
+    if (gameStageTitle) gameStageTitle.textContent = "اختار اسمك وشوف بطاقتك بسرية"
+    return
+  }
+
+  if (!turnDrawDone && !imposterRevealed) {
+    if (turnBox) turnBox.classList.remove("hidden")
+    if (drawTurnBtn) drawTurnBtn.classList.remove("hidden")
+    if (gameStageTitle) gameStageTitle.textContent = "اضغط القرعة قبل التصويت"
+    return
+  }
+
+  if (turnDrawDone && !votingStarted && !imposterRevealed) {
+    if (turnBox) turnBox.classList.remove("hidden")
+    if (startVotingBtn) startVotingBtn.classList.remove("hidden")
+    if (gameStageTitle) gameStageTitle.textContent = "انتهت القرعة، ابدأ التصويت"
+    return
+  }
+
+  if (imposterRevealed) {
+    if (gameStageTitle) gameStageTitle.textContent = "تم كشف الإمبوستر"
+    return
+  }
+
+  if (settings.enableVoting && votingStarted && !isVotingComplete()) {
+    if (gameStageTitle) gameStageTitle.textContent = "مرحلة التصويت"
+    renderCurrentVote()
+    return
+  }
+
+  if (gameStageTitle) gameStageTitle.textContent = "جاهز لكشف الإمبوستر"
 }
 
 /* =========================
@@ -199,6 +339,8 @@ function renderFixedPlayers() {
   const list = document.getElementById("fixedPlayersList")
   const badge = document.getElementById("playersCountBadge")
 
+  if (!list || !badge) return
+
   const names = getFixedPlayers()
 
   list.innerHTML = ""
@@ -281,7 +423,8 @@ function deleteFixedPlayer(index) {
 
 function getDefaultGameSettings() {
   return {
-    showCategoryForImposter: true
+    showCategoryForImposter: true,
+    enableVoting: true
   }
 }
 
@@ -303,21 +446,278 @@ function getGameSettings() {
 }
 
 function saveGameSettings() {
-  const checkbox = document.getElementById("showCategoryForImposter")
+  const showCategoryCheckbox = document.getElementById("showCategoryForImposter")
+  const enableVotingCheckbox = document.getElementById("enableVoting")
 
   const settings = {
-    showCategoryForImposter: checkbox ? checkbox.checked : true
+    showCategoryForImposter: showCategoryCheckbox ? showCategoryCheckbox.checked : true,
+    enableVoting: enableVotingCheckbox ? enableVotingCheckbox.checked : true
   }
 
   localStorage.setItem(GAME_SETTINGS_STORAGE_KEY, JSON.stringify(settings))
+
+  if (players.length > 0) {
+    updateGameStageAfterRestore()
+    updateGameButtons()
+    saveGameState()
+  }
 }
 
 function applyGameSettingsToUI() {
   const settings = getGameSettings()
-  const checkbox = document.getElementById("showCategoryForImposter")
 
-  if (checkbox) {
-    checkbox.checked = settings.showCategoryForImposter
+  const showCategoryCheckbox = document.getElementById("showCategoryForImposter")
+  const enableVotingCheckbox = document.getElementById("enableVoting")
+
+  if (showCategoryCheckbox) {
+    showCategoryCheckbox.checked = settings.showCategoryForImposter
+  }
+
+  if (enableVotingCheckbox) {
+    enableVotingCheckbox.checked = settings.enableVoting
+  }
+}
+
+/* =========================
+   التصويت والنقاط
+========================= */
+
+function initializeScores(names) {
+  scores = {}
+
+  names.forEach((name) => {
+    scores[name] = 0
+  })
+
+  renderScoreBoard()
+}
+
+function resetRoundVoting() {
+  votes = {}
+  currentVoteIndex = 0
+  imposterRevealed = false
+  roundScored = false
+  turnDrawDone = false
+  votingStarted = false
+  lastTurnWinnerName = ""
+
+  const votingPanel = document.getElementById("votingPanel")
+  const votingChoices = document.getElementById("votingChoices")
+  const nextVoteBtn = document.getElementById("nextVoteBtn")
+  const startVotingBtn = document.getElementById("startVotingBtn")
+
+  if (votingPanel) votingPanel.classList.add("hidden")
+  if (votingChoices) votingChoices.innerHTML = ""
+  if (nextVoteBtn) nextVoteBtn.classList.add("hidden")
+  if (startVotingBtn) startVotingBtn.classList.add("hidden")
+}
+
+function renderCurrentVote() {
+  const settings = getGameSettings()
+  const votingPanel = document.getElementById("votingPanel")
+  const votingChoices = document.getElementById("votingChoices")
+  const currentVoterTitle = document.getElementById("currentVoterTitle")
+  const nextVoteBtn = document.getElementById("nextVoteBtn")
+
+  if (!votingPanel || !votingChoices || !currentVoterTitle || !nextVoteBtn) return
+
+  if (!settings.enableVoting || !turnDrawDone || imposterRevealed) {
+    votingPanel.classList.add("hidden")
+    nextVoteBtn.classList.add("hidden")
+    return
+  }
+
+  if (currentVoteIndex >= players.length) {
+    votingPanel.classList.add("hidden")
+    nextVoteBtn.classList.add("hidden")
+    updateGameButtons()
+    return
+  }
+
+  const voter = players[currentVoteIndex]
+  const isLastVoter = currentVoteIndex === players.length - 1
+
+  votingPanel.classList.remove("hidden")
+  currentVoterTitle.textContent = `تصويت ${voter.name}`
+  votingChoices.innerHTML = ""
+  nextVoteBtn.classList.add("hidden")
+
+  players.forEach((target) => {
+    const btn = document.createElement("button")
+    btn.type = "button"
+    btn.className = "voteChoiceBtn"
+    btn.textContent = target.name
+
+    if (votes[voter.name] === target.name) {
+      btn.classList.add("selected")
+
+      if (!isLastVoter) {
+        nextVoteBtn.classList.remove("hidden")
+      }
+    }
+
+    btn.onclick = () => {
+      votes[voter.name] = target.name
+
+      document.querySelectorAll(".voteChoiceBtn").forEach((choiceBtn) => {
+        choiceBtn.classList.remove("selected")
+      })
+
+      btn.classList.add("selected")
+
+      if (isLastVoter) {
+        votingPanel.classList.add("hidden")
+        nextVoteBtn.classList.add("hidden")
+
+        const gameStageTitle = document.getElementById("gameStageTitle")
+        if (gameStageTitle) gameStageTitle.textContent = "جاهز لكشف الإمبوستر"
+
+        updateGameButtons()
+        saveGameState()
+        return
+      }
+
+      nextVoteBtn.classList.remove("hidden")
+
+      saveGameState()
+      updateGameButtons()
+    }
+
+    votingChoices.appendChild(btn)
+  })
+
+  updateGameButtons()
+}
+
+function goToNextVoter() {
+  if (currentVoteIndex >= players.length) return
+
+  const voter = players[currentVoteIndex]
+
+  if (!votes[voter.name]) {
+    showWarning("اختر اسم قبل الانتقال للي بعده")
+    return
+  }
+
+  hideWarning()
+
+  currentVoteIndex++
+
+  if (currentVoteIndex >= players.length) {
+    const votingPanel = document.getElementById("votingPanel")
+    const nextVoteBtn = document.getElementById("nextVoteBtn")
+    const gameStageTitle = document.getElementById("gameStageTitle")
+
+    if (votingPanel) votingPanel.classList.add("hidden")
+    if (nextVoteBtn) nextVoteBtn.classList.add("hidden")
+    if (gameStageTitle) gameStageTitle.textContent = "جاهز لكشف الإمبوستر"
+
+    updateGameButtons()
+    saveGameState()
+    return
+  }
+
+  renderCurrentVote()
+  updateGameButtons()
+  saveGameState()
+}
+
+function isVotingComplete() {
+  const settings = getGameSettings()
+
+  if (!settings.enableVoting) return true
+
+  return players.length > 0 && players.every((player) => {
+    return !!votes[player.name]
+  })
+}
+
+function calculateRoundScores() {
+  if (roundScored) return ""
+
+  const settings = getGameSettings()
+  const imposterName = players[imposterIndex].name
+  const correctVoters = []
+
+  if (settings.enableVoting) {
+    Object.keys(votes).forEach((voterName) => {
+      if (votes[voterName] === imposterName) {
+        correctVoters.push(voterName)
+      }
+    })
+  }
+
+  let resultText = ""
+
+  if (!settings.enableVoting) {
+    resultText = "التصويت غير مفعّل في هذه الجولة"
+  } else if (correctVoters.length > 0) {
+    correctVoters.forEach((name) => {
+      scores[name] = (scores[name] || 0) + 1
+    })
+
+    resultText = `اللي صوتوا صح: ${correctVoters.join("، ")}`
+  } else {
+    scores[imposterName] = (scores[imposterName] || 0) + 2
+    resultText = `ما أحد صوت على الإمبوستر، ${imposterName} أخذ نقطتين`
+  }
+
+  roundScored = true
+  renderScoreBoard()
+  saveGameState()
+
+  return resultText
+}
+
+function renderScoreBoard() {
+  const scoreList = document.getElementById("scoreList")
+
+  if (!scoreList) return
+
+  const names = Object.keys(scores)
+
+  scoreList.innerHTML = ""
+
+  if (names.length === 0) return
+
+  const sortedNames = names.sort((a, b) => {
+    return (scores[b] || 0) - (scores[a] || 0)
+  })
+
+  sortedNames.forEach((name, index) => {
+    const item = document.createElement("div")
+    item.className = "scoreItem"
+
+    const nameEl = document.createElement("div")
+    nameEl.className = "scoreName"
+    nameEl.textContent = index === 0 ? `👑 ${name}` : name
+
+    const pointsEl = document.createElement("div")
+    pointsEl.className = "scorePoints"
+    pointsEl.textContent = `${scores[name] || 0}`
+
+    item.appendChild(nameEl)
+    item.appendChild(pointsEl)
+
+    scoreList.appendChild(item)
+  })
+}
+
+function openScoreBoard() {
+  renderScoreBoard()
+
+  const scoreScreen = document.getElementById("scoreScreen")
+
+  if (scoreScreen) {
+    scoreScreen.style.display = "flex"
+  }
+}
+
+function closeScoreBoard() {
+  const scoreScreen = document.getElementById("scoreScreen")
+
+  if (scoreScreen) {
+    scoreScreen.style.display = "none"
   }
 }
 
@@ -338,6 +738,15 @@ function startGame() {
     return
   }
 
+  initializeScores(names)
+  turnDrawPool = shuffleNames(names)
+  startNewRoundWithCurrentPlayers(names)
+
+  showScreen("gameScreen")
+  saveGameState()
+}
+
+function startNewRoundWithCurrentPlayers(names) {
   selectedItem = getRandomItem()
 
   if (!selectedItem) {
@@ -360,19 +769,106 @@ function startGame() {
 
   imposterIndex = Math.floor(Math.random() * players.length)
 
-  players[imposterIndex].isImposter = true
-  players[imposterIndex].word = ""
+players[imposterIndex].isImposter = true
+players[imposterIndex].word = ""
+
+  resetRoundVoting()
+  resetTurnBox()
+
+const cardsGrid = document.getElementById("cardsGrid")
+const turnBox = document.getElementById("turnBox")
+const gameStageTitle = document.getElementById("gameStageTitle")
+const playersCounter = document.querySelector(".playersCounter")
+
+  if (cardsGrid) cardsGrid.classList.remove("hidden")
+  if (turnBox) turnBox.classList.add("hidden")
+  if (gameStageTitle) gameStageTitle.textContent = "اختار اسمك وشوف بطاقتك بسرية"
+  if (playersCounter) playersCounter.classList.remove("hidden")
 
   renderCards()
   updateCounter()
-  resetTurnBox()
+  renderScoreBoard()
   updateGameButtons()
+  saveGameState()
+}
 
-  showScreen("gameScreen")
+function areAllCardsViewed() {
+  return players.length > 0 && players.every((player) => player.viewed)
 }
 
 function renderCards() {
   const cardsGrid = document.getElementById("cardsGrid")
+  const turnBox = document.getElementById("turnBox")
+  const drawTurnBtn = document.getElementById("drawTurnBtn")
+  const startVotingBtn = document.getElementById("startVotingBtn")
+  const gameStageTitle = document.getElementById("gameStageTitle")
+  const playersCounter = document.querySelector(".playersCounter")
+
+  if (!cardsGrid || !turnBox) return
+
+  const allViewed = areAllCardsViewed()
+
+  if (allViewed) {
+    cardsGrid.classList.add("hidden")
+
+    if (playersCounter) {
+      playersCounter.classList.add("hidden")
+    }
+
+    if (!turnDrawDone && !imposterRevealed) {
+      turnBox.classList.remove("hidden")
+
+      if (drawTurnBtn) {
+        drawTurnBtn.classList.remove("hidden")
+      }
+
+      if (startVotingBtn) {
+        startVotingBtn.classList.add("hidden")
+      }
+
+      if (gameStageTitle) {
+        gameStageTitle.textContent 
+      }
+    }
+
+    if (turnDrawDone && !votingStarted && !imposterRevealed) {
+      turnBox.classList.remove("hidden")
+
+      if (drawTurnBtn) {
+        drawTurnBtn.classList.add("hidden")
+      }
+
+      if (startVotingBtn) {
+        startVotingBtn.classList.remove("hidden")
+      }
+
+      if (gameStageTitle) {
+        gameStageTitle.textContent = "انتهت القرعة، ابدأ التصويت"
+      }
+    }
+
+    return
+  }
+
+  cardsGrid.classList.remove("hidden")
+  turnBox.classList.add("hidden")
+
+  if (drawTurnBtn) {
+    drawTurnBtn.classList.add("hidden")
+  }
+
+  if (startVotingBtn) {
+    startVotingBtn.classList.add("hidden")
+  }
+
+  if (playersCounter) {
+    playersCounter.classList.remove("hidden")
+  }
+
+  if (gameStageTitle) {
+    gameStageTitle.textContent = "اختار اسمك وشوف بطاقتك بسرية"
+  }
+
   cardsGrid.innerHTML = ""
 
   players.forEach((player, index) => {
@@ -432,14 +928,53 @@ function hideSecret() {
   renderCards()
   updateCounter()
   updateGameButtons()
+  saveGameState()
 }
 
 /* =========================
-   قرعة الدور
+   القرعة بدون تكرار
 ========================= */
 
+function shuffleNames(names) {
+  const copy = [...names]
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const randomIndex = Math.floor(Math.random() * (i + 1))
+    const temp = copy[i]
+    copy[i] = copy[randomIndex]
+    copy[randomIndex] = temp
+  }
+
+  return copy
+}
+
+function getNextTurnWinner() {
+  const activeNames = players.map((player) => player.name)
+  const imposterName = players[imposterIndex]?.name || ""
+
+  
+  const allowedNames = activeNames.filter((name) => {
+    return name !== imposterName
+  })
+
+  
+  turnDrawPool = turnDrawPool.filter((name) => {
+    return allowedNames.includes(name)
+  })
+
+  
+  if (turnDrawPool.length === 0) {
+    turnDrawPool = shuffleNames(allowedNames)
+  }
+
+  const winnerName = turnDrawPool.shift()
+  lastTurnWinnerName = winnerName
+
+  return winnerName
+}
+
 function startTurnDraw() {
-  if (!players.length || turnDrawRunning) return
+  if (!players.length || turnDrawRunning || turnDrawDone) return
 
   const screen = document.getElementById("turnDrawScreen")
   const nameBox = document.getElementById("turnDrawName")
@@ -462,6 +997,8 @@ function startTurnDraw() {
     clearInterval(turnDrawTimer)
   }
 
+  const winnerName = getNextTurnWinner()
+
   turnDrawTimer = setInterval(() => {
     nameBox.textContent = players[index].name
 
@@ -476,15 +1013,14 @@ function startTurnDraw() {
       clearInterval(turnDrawTimer)
       turnDrawTimer = null
 
-      const winnerIndex = Math.floor(Math.random() * players.length)
-      const winner = players[winnerIndex]
-
       setTimeout(() => {
-        nameBox.textContent = winner.name
+        nameBox.textContent = winnerName
         nameBox.classList.add("winner")
         hint.textContent = "الدور عليه"
         closeBtn.classList.remove("hidden")
         turnDrawRunning = false
+        turnDrawDone = true
+        saveGameState()
       }, 280)
     }
   }, 65)
@@ -494,10 +1030,43 @@ function closeTurnDrawScreen() {
   if (turnDrawRunning) return
 
   const screen = document.getElementById("turnDrawScreen")
+  const turnBox = document.getElementById("turnBox")
+  const drawTurnBtn = document.getElementById("drawTurnBtn")
+  const startVotingBtn = document.getElementById("startVotingBtn")
+  const gameStageTitle = document.getElementById("gameStageTitle")
 
-  if (screen) {
-    screen.style.display = "none"
+  if (screen) screen.style.display = "none"
+
+  if (turnDrawDone) {
+    if (turnBox) turnBox.classList.remove("hidden")
+    if (drawTurnBtn) drawTurnBtn.classList.add("hidden")
+    if (startVotingBtn) startVotingBtn.classList.remove("hidden")
+    if (gameStageTitle) gameStageTitle.textContent = "انتهت القرعة، ابدأ التصويت"
   }
+
+  saveGameState()
+}
+function startVotingStage() {
+  const settings = getGameSettings()
+  const startVotingBtn = document.getElementById("startVotingBtn")
+  const turnBox = document.getElementById("turnBox")
+  const gameStageTitle = document.getElementById("gameStageTitle")
+
+  votingStarted = true
+
+  if (startVotingBtn) startVotingBtn.classList.add("hidden")
+  if (turnBox) turnBox.classList.add("hidden")
+
+  if (settings.enableVoting) {
+    if (gameStageTitle) gameStageTitle.textContent = "مرحلة التصويت"
+    currentVoteIndex = 0
+    renderCurrentVote()
+  } else {
+    if (gameStageTitle) gameStageTitle.textContent = "جاهز لكشف الإمبوستر"
+    updateGameButtons()
+  }
+
+  saveGameState()
 }
 
 function resetTurnBox() {
@@ -512,6 +1081,7 @@ function resetTurnBox() {
   }
 
   turnDrawRunning = false
+  turnDrawDone = false
 
   if (screen) screen.style.display = "none"
 
@@ -520,42 +1090,54 @@ function resetTurnBox() {
     nameBox.classList.remove("winner")
   }
 
-  if (hint) {
-    hint.textContent = "انتظر حتى تتوقف القرعة"
-  }
-
-  if (closeBtn) {
-    closeBtn.classList.add("hidden")
-  }
+  if (hint) hint.textContent = "انتظر حتى تتوقف القرعة"
+  if (closeBtn) closeBtn.classList.add("hidden")
 }
 
 /* =========================
-   أزرار نهاية الجولة
+   أزرار الجولة
 ========================= */
 
 function updateGameButtons() {
   const revealBtn = document.getElementById("revealBtn")
   const newRoundBtn = document.getElementById("newRoundBtn")
   const resetBtn = document.getElementById("resetBtn")
+  const scoreBtn = document.getElementById("scoreBtn")
 
-  if (!revealBtn || !newRoundBtn || !resetBtn) return
+  if (!revealBtn || !newRoundBtn || !resetBtn || !scoreBtn) return
 
-  const allViewed = players.length > 0 && players.every((player) => player.viewed)
+  const allViewed = areAllCardsViewed()
+  const votingComplete = isVotingComplete()
 
-  if (allViewed) {
-    revealBtn.classList.remove("hidden")
-  } else {
-    revealBtn.classList.add("hidden")
-  }
-
+  revealBtn.classList.add("hidden")
   newRoundBtn.classList.add("hidden")
   resetBtn.classList.add("hidden")
+  scoreBtn.classList.add("hidden")
+
+  if (!imposterRevealed && allViewed && turnDrawDone && votingStarted && votingComplete) {
+  revealBtn.classList.remove("hidden")
+}
+
+  if (imposterRevealed) {
+    scoreBtn.classList.remove("hidden")
+    newRoundBtn.classList.remove("hidden")
+    resetBtn.classList.remove("hidden")
+  }
 }
 
 function revealImposter() {
   if (!players.length || imposterIndex === null) return
 
   const imposter = players[imposterIndex]
+  const scoreResultText = calculateRoundScores()
+
+  imposterRevealed = true
+
+  const gameStageTitle = document.getElementById("gameStageTitle")
+  const votingPanel = document.getElementById("votingPanel")
+
+  if (gameStageTitle) gameStageTitle.textContent = "تم كشف الإمبوستر"
+  if (votingPanel) votingPanel.classList.add("hidden")
 
   document.getElementById("revealName").textContent = imposter.name
 
@@ -563,17 +1145,15 @@ function revealImposter() {
     الفئة: ${selectedItem.category}
     <br>
     الكلمة: ${selectedItem.word}
+    <br>
+    <span style="color:#7F2020">${scoreResultText}</span>
   `
 
   document.getElementById("revealScreen").style.display = "flex"
 
-  const revealBtn = document.getElementById("revealBtn")
-  const newRoundBtn = document.getElementById("newRoundBtn")
-  const resetBtn = document.getElementById("resetBtn")
-
-  if (revealBtn) revealBtn.classList.add("hidden")
-  if (newRoundBtn) newRoundBtn.classList.remove("hidden")
-  if (resetBtn) resetBtn.classList.remove("hidden")
+  renderScoreBoard()
+  updateGameButtons()
+  saveGameState()
 }
 
 function closeReveal() {
@@ -583,48 +1163,37 @@ function closeReveal() {
 function newRound() {
   if (players.length === 0) return
 
-  selectedItem = getRandomItem()
+  const names = players.map((player) => player.name)
 
-  if (!selectedItem) {
-    showWarning("تعذر اختيار كلمة")
-    return
-  }
-
-  players = players.map((player) => {
-    return {
-      name: player.name,
-      category: selectedItem.category,
-      word: selectedItem.word,
-      description: selectedItem.description,
-      isImposter: false,
-      viewed: false
-    }
-  })
-
-  imposterIndex = Math.floor(Math.random() * players.length)
-
-  players[imposterIndex].isImposter = true
-  players[imposterIndex].word = ""
-
-  renderCards()
-  updateCounter()
   closeReveal()
-  resetTurnBox()
-  updateGameButtons()
+  closeScoreBoard()
+  startNewRoundWithCurrentPlayers(names)
+  saveGameState()
 }
 
 function resetGame() {
   players = []
+  votes = {}
+  scores = {}
   imposterIndex = null
   currentViewedIndex = null
   selectedItem = null
+  imposterRevealed = false
+  roundScored = false
+  currentVoteIndex = 0
+  turnDrawDone = false
+  votingStarted = false
+  turnDrawPool = []
+  lastTurnWinnerName = ""
 
   document.getElementById("secretScreen").style.display = "none"
   document.getElementById("revealScreen").style.display = "none"
 
+  closeScoreBoard()
   resetTurnBox()
-  updateGameButtons()
+  clearGameState()
   renderFixedPlayers()
+  renderScoreBoard()
   showScreen("setupScreen")
 }
 

@@ -8,7 +8,6 @@
 
   <link rel="stylesheet" href="styles.css" />
 
-  <!-- مكتبة قراءة Excel -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 </head>
 
@@ -24,9 +23,7 @@
 
         <h1 class="title">الإمبوستر</h1>
 
-        <p class="subtitle">
-          الكل يعرف الفئة والكلمة، والإمبوستر يحاول يسايرهم بدون ما ينكشف.
-        </p>
+        
       </div>
 
       <div class="panel">
@@ -40,21 +37,40 @@
           </div>
         </div>
 
-        <div class="settingCard">
-          <div>
-            <h3>إظهار الفئة للإمبوستر</h3>
-            
+        <div class="settingsGrid">
+          <div class="settingCard">
+            <div>
+              <h3>إظهار الفئة</h3>
+              
+            </div>
+
+            <label class="switch">
+              <input
+                id="showCategoryForImposter"
+                type="checkbox"
+                checked
+                onchange="saveGameSettings()"
+              >
+              <span class="slider"></span>
+            </label>
           </div>
 
-          <label class="switch">
-            <input
-              id="showCategoryForImposter"
-              type="checkbox"
-              checked
-              onchange="saveGameSettings()"
-            >
-            <span class="slider"></span>
-          </label>
+          <div class="settingCard">
+            <div>
+              <h3>التصويت</h3>
+              
+            </div>
+
+            <label class="switch">
+              <input
+                id="enableVoting"
+                type="checkbox"
+                checked
+                onchange="saveGameSettings()"
+              >
+              <span class="slider"></span>
+            </label>
+          </div>
         </div>
 
         <div id="warning" class="warning"></div>
@@ -63,7 +79,7 @@
           <div class="playersHeader">
             <div>
               <label>قائمة اللاعبين</label>
-              <p class="playersNote">الأسماء</p>
+              
             </div>
 
             <div id="playersCountBadge" class="playersCountBadge">0 لاعبين</div>
@@ -91,7 +107,7 @@
       <div class="gameHeader">
         <div>
           <div class="roundLabel">الجولة الحالية</div>
-          <h2>اختار اسمك وشوف بطاقتك بسرية</h2>
+          <h2 id="gameStageTitle">اختار اسمك وشوف بطاقتك بسرية</h2>
         </div>
 
         <div class="playersCounter">
@@ -107,15 +123,37 @@
 
       <div id="cardsGrid" class="cardsGrid"></div>
 
-      <div class="turnBox">
-        <button class="drawTurnBtn" onclick="startTurnDraw()">
-          القرعة
-        </button>
-      </div>
+      <div id="turnBox" class="turnBox hidden">
+  <button id="drawTurnBtn" class="drawTurnBtn" onclick="startTurnDraw()">
+    القرعة
+  </button>
+
+  <button id="startVotingBtn" class="startVotingBtn hidden" onclick="startVotingStage()">
+    بدء التصويت
+  </button>
+</div>
+
+      <div id="votingPanel" class="votingPanel hidden">
+  <div class="votingHeader">
+    <div class="votingBadge">مرحلة التصويت</div>
+    <h3 id="currentVoterTitle">تصويت اللاعب</h3>
+    <p>اختر الشخص اللي تتوقع أنه الإمبوستر</p>
+  </div>
+
+  <div id="votingChoices" class="votingChoices"></div>
+
+  <button id="nextVoteBtn" class="nextVoteBtn hidden" onclick="goToNextVoter()">
+    اللي بعده
+  </button>
+</div>
 
       <div class="actionsBar">
         <button id="revealBtn" class="dangerBtn hidden" onclick="revealImposter()">
           كشف الإمبوستر
+        </button>
+
+        <button id="scoreBtn" class="scoreBtn hidden" onclick="openScoreBoard()">
+          النتائج
         </button>
 
         <button id="newRoundBtn" class="primaryBtn hidden" onclick="newRound()">
@@ -123,7 +161,7 @@
         </button>
 
         <button id="resetBtn" class="lightBtn hidden" onclick="resetGame()">
-          رجوع للإعدادات
+          لعبة جديدة
         </button>
       </div>
 
@@ -162,13 +200,12 @@
       <button class="hideBtn" onclick="closeReveal()">
         إغلاق
       </button>
-
     </div>
   </div>
 
   <!-- شاشة القرعة -->
-  <div id="turnDrawScreen" class="turnDrawScreen" onclick="closeTurnDrawScreen()">
-    <div class="turnDrawCard" onclick="event.stopPropagation()">
+  <div id="turnDrawScreen" class="turnDrawScreen">
+    <div class="turnDrawCard">
 
       <div class="turnDrawTitle">القرعة</div>
 
@@ -181,6 +218,20 @@
       </div>
 
       <button id="closeTurnDrawBtn" class="hideBtn hidden" onclick="closeTurnDrawScreen()">
+        متابعة
+      </button>
+
+    </div>
+  </div>
+
+  <!-- شاشة النتائج -->
+  <div id="scoreScreen" class="scoreScreen" onclick="closeScoreBoard()">
+    <div class="scoreCard" onclick="event.stopPropagation()">
+
+      <div class="scoreBoardTitle">لوحة النتائج</div>
+      <div id="scoreList" class="scoreList"></div>
+
+      <button class="hideBtn" onclick="closeScoreBoard()">
         إغلاق
       </button>
 
