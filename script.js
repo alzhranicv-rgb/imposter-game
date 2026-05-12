@@ -5,7 +5,7 @@ let players = []
 let imposterIndex = null
 let currentViewedIndex = null
 
-let lastRoundLabelTapTime = 0
+
 
 let turnDrawRunning = false
 let turnDrawTimer = null
@@ -752,6 +752,15 @@ function startGame() {
   saveGameState()
 }
 
+function getRandomIndex(length) {
+  if (length <= 0) return 0
+
+  const randomArray = new Uint32Array(1)
+  crypto.getRandomValues(randomArray)
+
+  return randomArray[0] % length
+}
+
 function startNewRoundWithCurrentPlayers(names) {
   selectedItem = getRandomItem()
 
@@ -773,7 +782,7 @@ function startNewRoundWithCurrentPlayers(names) {
     })
   })
 
-  imposterIndex = Math.floor(Math.random() * players.length)
+  imposterIndex = getRandomIndex(players.length)
 
 players[imposterIndex].isImposter = true
 players[imposterIndex].word = ""
@@ -1213,17 +1222,7 @@ renderFixedPlayers()
 renderScoreBoard()
 showScreen("setupScreen")
 }
-function handleRoundLabelTap() {
-  const now = Date.now()
 
-  if (now - lastRoundLabelTapTime <= 450) {
-    lastRoundLabelTapTime = 0
-    resetGame()
-    return
-  }
-
-  lastRoundLabelTapTime = now
-}
 /* =========================
    أدوات عامة
 ========================= */

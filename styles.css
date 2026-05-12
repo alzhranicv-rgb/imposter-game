@@ -575,17 +575,11 @@ button:active {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-}
-
-.roundTopRow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   gap: 7px;
 }
 
-.homeRoundBtn {
+.homeRoundBtn,
+.scoreRoundBtn {
   width: 34px;
   height: 34px;
   min-width: 34px;
@@ -604,8 +598,13 @@ button:active {
     inset 0 -3px 0 rgba(47, 51, 43, 0.06);
 }
 
-.homeRoundBtn:active {
+.homeRoundBtn:active,
+.scoreRoundBtn:active {
   transform: scale(0.92);
+}
+
+.scoreRoundBtn {
+  background: rgba(255, 253, 248, 0.9);
 }
 /* =========================
    البطاقات
