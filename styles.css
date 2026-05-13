@@ -7,8 +7,7 @@
 }
 
 /* =========================================================
-   IMPOSTER - CLEAN SOFT UI
-   تصميم فاتح، مريح، واضح، وكروت أكبر
+   IMPOSTER - FINAL SOFT PREMIUM UI
 ========================================================= */
 
 :root {
@@ -28,6 +27,7 @@
   --accent-soft: #f5e6c4;
 
   --danger: #9d3b35;
+  --danger-dark: #7f2020;
   --danger-soft: #f4dedb;
 
   --text: #2f332b;
@@ -142,7 +142,7 @@ button:disabled {
 }
 
 /* =========================================================
-   SETUP SCREEN
+   SETUP
 ========================================================= */
 
 .setupShell {
@@ -156,10 +156,6 @@ button:disabled {
 .hero {
   text-align: center;
   padding: 4px 4px 0;
-}
-
-.heroGlow {
-  display: none;
 }
 
 .badge {
@@ -300,7 +296,6 @@ button:disabled {
   font-weight: 900;
 }
 
-/* Switch */
 .switch {
   position: relative;
   display: block;
@@ -360,7 +355,7 @@ button:disabled {
 }
 
 /* =========================================================
-   PLAYERS SETUP
+   SETUP PLAYERS
 ========================================================= */
 
 .formGroup {
@@ -447,7 +442,6 @@ input:focus {
   box-shadow: 0 10px 20px rgba(127, 146, 119, 0.18);
 }
 
-/* أسماء البداية بشكل مرتب */
 .fixedPlayersList {
   min-height: 0;
   overflow: auto;
@@ -624,7 +618,7 @@ input:focus {
 }
 
 /* =========================================================
-   PLAYER CARDS - واضح وكبير لـ 10 لاعبين
+   PLAYER CARDS
 ========================================================= */
 
 .gameBody {
@@ -659,12 +653,16 @@ input:focus {
   position: relative;
   min-height: 0;
   height: 100%;
-  border-radius: 22px;
+  border-radius: 24px;
   padding: 12px 8px 20px;
   color: var(--text);
-  background: var(--card);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-soft);
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.86), transparent 28%),
+    linear-gradient(180deg, #fffdf8 0%, #f3eee4 100%);
+  border: 1.5px solid rgba(127, 146, 119, 0.14);
+  box-shadow:
+    0 12px 24px rgba(47, 51, 43, 0.10),
+    inset 0 -4px 0 rgba(47, 51, 43, 0.04);
   display: grid;
   place-items: center;
   text-align: center;
@@ -674,21 +672,30 @@ input:focus {
   animation: cardIn 0.25s ease both;
 }
 
+.playerCard span {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .playerCard::before {
   content: "";
   position: absolute;
-  inset: 8px;
-  border-radius: 16px;
-  border: 1px dashed rgba(127, 146, 119, 0.20);
+  inset: 9px;
+  border-radius: 17px;
+  border: 1px dashed rgba(127, 146, 119, 0.18);
   pointer-events: none;
 }
 
 .playerCard::after {
-  content: "افتح";
+  content: "بطاقة";
   position: absolute;
-  bottom: 6px;
+  top: 8px;
   left: 8px;
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 999px;
   background: var(--main-soft);
   color: var(--main-dark);
@@ -702,14 +709,19 @@ input:focus {
 
 .playerCard.viewed {
   color: rgba(47, 51, 43, 0.42);
-  background: var(--card-soft);
-  box-shadow: none;
+  background:
+    linear-gradient(180deg, #f3eee4 0%, #ebe5d8 100%);
+  box-shadow:
+    0 6px 14px rgba(47, 51, 43, 0.05),
+    inset 0 -3px 0 rgba(47, 51, 43, 0.03);
 }
 
 .playerCard.viewed::after {
-  content: "تم";
+  content: "تمت";
+  top: auto;
+  bottom: 7px;
   background: #e7dfd2;
-  color: rgba(47, 51, 43, 0.55);
+  color: rgba(47, 51, 43, 0.58);
 }
 
 .playerCard:disabled {
@@ -977,26 +989,60 @@ input:focus {
   width: min(100%, 420px);
   max-height: 100%;
   overflow: hidden;
-  background: var(--card);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,.82), transparent 28%),
+    linear-gradient(180deg, #fffdf8 0%, #f5f1e8 100%);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 30px;
+  border-radius: 32px;
   padding: 18px;
   text-align: center;
-  box-shadow: 0 28px 80px rgba(47, 51, 43, 0.25);
+  box-shadow:
+    0 28px 80px rgba(47, 51, 43, 0.25),
+    inset 0 1px 0 rgba(255,255,255,.9);
 }
 
-.secretScreen.show .secretCard,
+.secretScreen.show .secretCard {
+  animation: secretCardIn 0.34s cubic-bezier(.2,.9,.2,1) both;
+}
+
+.secretScreen.closing .secretCard {
+  animation: secretCardOut 0.18s ease both;
+}
+
 .turnDrawScreen.show .turnDrawCard,
 .revealScreen.show .revealCard,
 .scoreScreen.show .scoreCard {
   animation: modalIn 0.28s ease both;
 }
 
-.secretScreen.closing .secretCard,
 .turnDrawScreen.closing .turnDrawCard,
 .revealScreen.closing .revealCard,
 .scoreScreen.closing .scoreCard {
   animation: modalOut 0.18s ease both;
+}
+
+@keyframes secretCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes secretCardOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
 }
 
 @keyframes modalIn {
@@ -1049,7 +1095,7 @@ input:focus {
 
 .secretName {
   color: var(--text);
-  font-size: 27px;
+  font-size: 30px;
   line-height: 1.15;
   font-weight: 1000;
 }
@@ -1087,24 +1133,32 @@ input:focus {
 }
 
 .secretWord {
-  min-height: 128px;
+  min-height: 140px;
   display: grid;
   place-items: center;
-  background: var(--card-soft);
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.76), transparent 28%),
+    linear-gradient(180deg, #fffdf8 0%, #f2ecdf 100%);
   color: var(--main-dark);
-  border: 1px solid var(--line);
-  border-radius: 26px;
+  border: 1px solid rgba(127, 146, 119, 0.14);
+  border-radius: 28px;
   margin: 8px 0 14px;
   padding: 14px;
   font-size: clamp(40px, 11vw, 62px);
   line-height: 1.1;
   font-weight: 1000;
-  box-shadow: var(--shadow-soft);
+  box-shadow:
+    0 10px 22px rgba(47, 51, 43, 0.08),
+    inset 0 -4px 0 rgba(47, 51, 43, 0.04);
 }
 
 .secretWord.imposterWord {
   color: var(--card);
-  background: var(--danger);
+  background:
+    linear-gradient(180deg, #b34b43 0%, #9d3b35 100%);
+  box-shadow:
+    0 12px 22px rgba(157, 59, 53, 0.18),
+    inset 0 -4px 0 rgba(0,0,0,.08);
 }
 
 .hideBtn {
@@ -1316,7 +1370,7 @@ input:focus {
 }
 
 /* =========================================================
-   IPHONE SMALL / SHORT HEIGHT
+   IPHONE SMALL
 ========================================================= */
 
 @media (max-width: 430px) {

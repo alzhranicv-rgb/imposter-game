@@ -5,8 +5,6 @@ let players = []
 let imposterIndex = null
 let currentViewedIndex = null
 
-
-
 let turnDrawRunning = false
 let turnDrawTimer = null
 let turnDrawDone = false
@@ -21,7 +19,6 @@ let scores = {}
 let imposterRevealed = false
 let roundScored = false
 let currentVoteIndex = 0
-
 
 const FIXED_PLAYERS_STORAGE_KEY = "imposter_fixed_players_v3"
 const USED_WORDS_STORAGE_KEY = "imposter_used_words_v1"
@@ -76,7 +73,6 @@ async function loadExcelFromProject() {
     hideWarning()
 
     restoreGameState()
-
   } catch (error) {
     fileInfo.textContent = "تعذر تحميل ملف الكلمات"
     showWarning("تأكد أن ملف categorized_words.xlsx موجود بجانب index.html")
@@ -139,19 +135,19 @@ function saveGameState() {
   if (!players || players.length === 0 || !selectedItem) return
 
   const state = {
-  selectedItem,
-  players,
-  imposterIndex,
-  votes,
-  scores,
-  imposterRevealed,
-  roundScored,
-  currentVoteIndex,
-  turnDrawDone,
-  votingStarted,
-  turnDrawPool,
-  lastTurnWinnerName
-}
+    selectedItem,
+    players,
+    imposterIndex,
+    votes,
+    scores,
+    imposterRevealed,
+    roundScored,
+    currentVoteIndex,
+    turnDrawDone,
+    votingStarted,
+    turnDrawPool,
+    lastTurnWinnerName
+  }
 
   localStorage.setItem(GAME_STATE_STORAGE_KEY, JSON.stringify(state))
 }
@@ -188,7 +184,6 @@ function restoreGameState() {
     applyGameSettingsToUI()
     showScreen("gameScreen")
     renderRestoredGame()
-
   } catch (error) {
     console.warn("تعذر استعادة حالة اللعبة", error)
     clearGameState()
@@ -200,10 +195,27 @@ function renderRestoredGame() {
   const secretScreen = document.getElementById("secretScreen")
   const revealScreen = document.getElementById("revealScreen")
   const scoreScreen = document.getElementById("scoreScreen")
+  const turnDrawScreen = document.getElementById("turnDrawScreen")
 
-  if (secretScreen) secretScreen.style.display = "none"
-  if (revealScreen) revealScreen.style.display = "none"
-  if (scoreScreen) scoreScreen.style.display = "none"
+  if (secretScreen) {
+    secretScreen.classList.remove("show", "closing")
+    secretScreen.style.display = "none"
+  }
+
+  if (revealScreen) {
+    revealScreen.classList.remove("show", "closing")
+    revealScreen.style.display = "none"
+  }
+
+  if (scoreScreen) {
+    scoreScreen.classList.remove("show", "closing")
+    scoreScreen.style.display = "none"
+  }
+
+  if (turnDrawScreen) {
+    turnDrawScreen.classList.remove("show", "closing")
+    turnDrawScreen.style.display = "none"
+  }
 
   renderCards()
   updateCounter()
@@ -233,7 +245,7 @@ function updateGameStageAfterRestore() {
   if (!turnDrawDone && !imposterRevealed) {
     if (turnBox) turnBox.classList.remove("hidden")
     if (drawTurnBtn) drawTurnBtn.classList.remove("hidden")
-    if (gameStageTitle) gameStageTitle.textContent = "اضغط القرعة "
+    if (gameStageTitle) gameStageTitle.textContent = "ابدأ القرعة"
     return
   }
 
@@ -375,6 +387,8 @@ function addFixedPlayer() {
   hideWarning()
 
   const input = document.getElementById("newPlayerName")
+  if (!input) return
+
   const newName = input.value.trim()
 
   if (!newName) {
@@ -644,7 +658,6 @@ function calculateRoundScores() {
 
   if (settings.enableVoting) {
     Object.keys(votes).forEach((voterName) => {
-      // صوت الإمبوستر لا يُحسب نهائيًا
       if (voterName === imposterName) return
 
       if (votes[voterName] === imposterName) {
@@ -732,7 +745,7 @@ function closeScoreBoard() {
   setTimeout(() => {
     scoreScreen.classList.remove("closing")
     scoreScreen.style.display = "none"
-  }, 220)
+  }, 180)
 }
 
 /* =========================
@@ -792,16 +805,16 @@ function startNewRoundWithCurrentPlayers(names) {
 
   imposterIndex = getRandomIndex(players.length)
 
-players[imposterIndex].isImposter = true
-players[imposterIndex].word = ""
+  players[imposterIndex].isImposter = true
+  players[imposterIndex].word = ""
 
   resetRoundVoting()
   resetTurnBox()
 
-const cardsGrid = document.getElementById("cardsGrid")
-const turnBox = document.getElementById("turnBox")
-const gameStageTitle = document.getElementById("gameStageTitle")
-const playersCounter = document.querySelector(".playersCounter")
+  const cardsGrid = document.getElementById("cardsGrid")
+  const turnBox = document.getElementById("turnBox")
+  const gameStageTitle = document.getElementById("gameStageTitle")
+  const playersCounter = document.querySelector(".playersCounter")
 
   if (cardsGrid) cardsGrid.classList.remove("hidden")
   if (turnBox) turnBox.classList.add("hidden")
@@ -911,8 +924,9 @@ function renderCards() {
   players.forEach((player, index) => {
     const card = document.createElement("button")
 
+    card.type = "button"
     card.className = `playerCard ${player.viewed ? "viewed" : ""}`
-    card.textContent = player.viewed ? `${player.name} ✓` : player.name
+    card.innerHTML = `<span>${player.name}</span>`
 
     if (player.viewed) {
       card.disabled = true
@@ -924,13 +938,10 @@ function renderCards() {
   })
 }
 
-
 function showSecret(index) {
   const player = players[index]
 
-  if (!player || player.viewed) {
-    return
-  }
+  if (!player || player.viewed) return
 
   currentViewedIndex = index
 
@@ -941,7 +952,11 @@ function showSecret(index) {
   const secretCategory = document.getElementById("secretCategory")
   const secretWord = document.getElementById("secretWord")
 
+  if (!secretScreen || !secretName || !secretCategory || !secretWord) return
+
   secretName.textContent = player.name
+
+  secretWord.classList.remove("imposterWord")
 
   if (player.isImposter) {
     secretWord.textContent = "أنت الإمبوستر"
@@ -957,16 +972,12 @@ function showSecret(index) {
   } else {
     secretCategory.textContent = `الفئة: ${player.category}`
     secretCategory.style.display = "inline-flex"
-
     secretWord.textContent = player.word
-    secretWord.classList.remove("imposterWord")
   }
 
-  if (secretScreen) {
-    secretScreen.classList.remove("closing")
-    secretScreen.classList.add("show")
-    secretScreen.style.display = "flex"
-  }
+  secretScreen.classList.remove("closing")
+  secretScreen.classList.add("show")
+  secretScreen.style.display = "flex"
 }
 
 function hideSecret() {
@@ -978,27 +989,26 @@ function hideSecret() {
 
   currentViewedIndex = null
 
-  if (secretScreen) {
-    secretScreen.classList.remove("show")
-    secretScreen.classList.add("closing")
-
-    setTimeout(() => {
-      secretScreen.classList.remove("closing")
-      secretScreen.style.display = "none"
-
-      renderCards()
-      updateCounter()
-      updateGameButtons()
-      saveGameState()
-    }, 230)
-
+  if (!secretScreen) {
+    renderCards()
+    updateCounter()
+    updateGameButtons()
+    saveGameState()
     return
   }
 
-  renderCards()
-  updateCounter()
-  updateGameButtons()
-  saveGameState()
+  secretScreen.classList.remove("show")
+  secretScreen.classList.add("closing")
+
+  setTimeout(() => {
+    secretScreen.classList.remove("closing")
+    secretScreen.style.display = "none"
+
+    renderCards()
+    updateCounter()
+    updateGameButtons()
+    saveGameState()
+  }, 180)
 }
 
 /* =========================
@@ -1022,17 +1032,14 @@ function getNextTurnWinner() {
   const activeNames = players.map((player) => player.name)
   const imposterName = players[imposterIndex]?.name || ""
 
-  
   const allowedNames = activeNames.filter((name) => {
     return name !== imposterName
   })
 
-  
   turnDrawPool = turnDrawPool.filter((name) => {
     return allowedNames.includes(name)
   })
 
-  
   if (turnDrawPool.length === 0) {
     turnDrawPool = shuffleNames(allowedNames)
   }
@@ -1055,8 +1062,14 @@ function startTurnDraw() {
 
   turnDrawRunning = true
 
+  screen.classList.remove("closing")
+  screen.classList.add("show")
   screen.style.display = "flex"
+
   nameBox.classList.remove("winner")
+  nameBox.classList.remove("spinning")
+  nameBox.textContent = "جاهز؟"
+
   closeBtn.classList.add("hidden")
   hint.textContent = "جاري اختيار اللاعب..."
 
@@ -1070,6 +1083,10 @@ function startTurnDraw() {
   const winnerName = getNextTurnWinner()
 
   turnDrawTimer = setInterval(() => {
+    nameBox.classList.remove("spinning")
+    void nameBox.offsetWidth
+    nameBox.classList.add("spinning")
+
     nameBox.textContent = players[index].name
 
     index++
@@ -1084,6 +1101,7 @@ function startTurnDraw() {
       turnDrawTimer = null
 
       setTimeout(() => {
+        nameBox.classList.remove("spinning")
         nameBox.textContent = winnerName
         nameBox.classList.add("winner")
         hint.textContent = "الدور عليه"
@@ -1091,9 +1109,9 @@ function startTurnDraw() {
         turnDrawRunning = false
         turnDrawDone = true
         saveGameState()
-      }, 280)
+      }, 260)
     }
-  }, 65)
+  }, 70)
 }
 
 function closeTurnDrawScreen() {
@@ -1112,7 +1130,7 @@ function closeTurnDrawScreen() {
     setTimeout(() => {
       screen.classList.remove("closing")
       screen.style.display = "none"
-    }, 220)
+    }, 180)
   }
 
   if (turnDrawDone) {
@@ -1162,11 +1180,16 @@ function resetTurnBox() {
   turnDrawRunning = false
   turnDrawDone = false
 
-  if (screen) screen.style.display = "none"
+  if (screen) {
+    screen.classList.remove("show")
+    screen.classList.remove("closing")
+    screen.style.display = "none"
+  }
 
   if (nameBox) {
     nameBox.textContent = "جاهز؟"
     nameBox.classList.remove("winner")
+    nameBox.classList.remove("spinning")
   }
 
   if (hint) hint.textContent = "انتظر حتى تتوقف القرعة"
@@ -1194,8 +1217,8 @@ function updateGameButtons() {
   scoreBtn.classList.add("hidden")
 
   if (!imposterRevealed && allViewed && turnDrawDone && votingStarted && votingComplete) {
-  revealBtn.classList.remove("hidden")
-}
+    revealBtn.classList.remove("hidden")
+  }
 
   if (imposterRevealed) {
     scoreBtn.classList.remove("hidden")
@@ -1215,19 +1238,25 @@ function revealImposter() {
   const gameStageTitle = document.getElementById("gameStageTitle")
   const votingPanel = document.getElementById("votingPanel")
   const revealScreen = document.getElementById("revealScreen")
+  const revealName = document.getElementById("revealName")
+  const revealDetails = document.getElementById("revealDetails")
 
   if (gameStageTitle) gameStageTitle.textContent = "تم كشف الإمبوستر"
   if (votingPanel) votingPanel.classList.add("hidden")
 
-  document.getElementById("revealName").textContent = imposter.name
+  if (revealName) {
+    revealName.textContent = imposter.name
+  }
 
-  document.getElementById("revealDetails").innerHTML = `
-    الفئة: ${selectedItem.category}
-    <br>
-    الكلمة: ${selectedItem.word}
-    <br>
-    <span style="color:#7F2020">${scoreResultText}</span>
-  `
+  if (revealDetails) {
+    revealDetails.innerHTML = `
+      الفئة: ${selectedItem.category}
+      <br>
+      الكلمة: ${selectedItem.word}
+      <br>
+      <span style="color:#7F2020">${scoreResultText}</span>
+    `
+  }
 
   if (revealScreen) {
     revealScreen.classList.remove("closing")
@@ -1251,7 +1280,7 @@ function closeReveal() {
   setTimeout(() => {
     revealScreen.classList.remove("closing")
     revealScreen.style.display = "none"
-  }, 220)
+  }, 180)
 }
 
 function newRound() {
@@ -1280,15 +1309,31 @@ function resetGame() {
   turnDrawPool = []
   lastTurnWinnerName = ""
 
-  document.getElementById("secretScreen").style.display = "none"
-  document.getElementById("revealScreen").style.display = "none"
+  const secretScreen = document.getElementById("secretScreen")
+  const revealScreen = document.getElementById("revealScreen")
+  const turnDrawScreen = document.getElementById("turnDrawScreen")
 
-closeScoreBoard()
-resetTurnBox()
-clearGameState()
-renderFixedPlayers()
-renderScoreBoard()
-showScreen("setupScreen")
+  if (secretScreen) {
+    secretScreen.classList.remove("show", "closing")
+    secretScreen.style.display = "none"
+  }
+
+  if (revealScreen) {
+    revealScreen.classList.remove("show", "closing")
+    revealScreen.style.display = "none"
+  }
+
+  if (turnDrawScreen) {
+    turnDrawScreen.classList.remove("show", "closing")
+    turnDrawScreen.style.display = "none"
+  }
+
+  closeScoreBoard()
+  resetTurnBox()
+  clearGameState()
+  renderFixedPlayers()
+  renderScoreBoard()
+  showScreen("setupScreen")
 }
 
 /* =========================
@@ -1299,8 +1344,11 @@ function updateCounter() {
   const viewed = players.filter((player) => player.viewed).length
   const total = players.length
 
-  document.getElementById("viewedCounter").textContent = viewed
-  document.getElementById("totalCounter").textContent = total
+  const viewedCounter = document.getElementById("viewedCounter")
+  const totalCounter = document.getElementById("totalCounter")
+
+  if (viewedCounter) viewedCounter.textContent = viewed
+  if (totalCounter) totalCounter.textContent = total
 }
 
 function showScreen(screenId) {
@@ -1308,11 +1356,17 @@ function showScreen(screenId) {
     screen.classList.remove("active")
   })
 
-  document.getElementById(screenId).classList.add("active")
+  const screen = document.getElementById(screenId)
+
+  if (screen) {
+    screen.classList.add("active")
+  }
 }
 
 function showWarning(text) {
   const warning = document.getElementById("warning")
+
+  if (!warning) return
 
   warning.textContent = text
   warning.style.display = "block"
@@ -1321,17 +1375,12 @@ function showWarning(text) {
 function hideWarning() {
   const warning = document.getElementById("warning")
 
+  if (!warning) return
+
   warning.textContent = ""
   warning.style.display = "none"
 }
 
-/* =========================
-   تشغيل أولي
-========================= */
-
-renderFixedPlayers()
-applyGameSettingsToUI()
-loadExcelFromProject()
 function lockAppHeight() {
   document.documentElement.style.setProperty(
     "--app-height",
@@ -1339,6 +1388,14 @@ function lockAppHeight() {
   )
 }
 
+/* =========================
+   تشغيل أولي
+========================= */
+
 window.addEventListener("resize", lockAppHeight)
 window.addEventListener("orientationchange", lockAppHeight)
 lockAppHeight()
+
+renderFixedPlayers()
+applyGameSettingsToUI()
+loadExcelFromProject()
