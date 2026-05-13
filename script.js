@@ -715,6 +715,8 @@ function openScoreBoard() {
   const scoreScreen = document.getElementById("scoreScreen")
 
   if (scoreScreen) {
+    scoreScreen.classList.remove("closing")
+    scoreScreen.classList.add("show")
     scoreScreen.style.display = "flex"
   }
 }
@@ -722,9 +724,15 @@ function openScoreBoard() {
 function closeScoreBoard() {
   const scoreScreen = document.getElementById("scoreScreen")
 
-  if (scoreScreen) {
+  if (!scoreScreen) return
+
+  scoreScreen.classList.remove("show")
+  scoreScreen.classList.add("closing")
+
+  setTimeout(() => {
+    scoreScreen.classList.remove("closing")
     scoreScreen.style.display = "none"
-  }
+  }, 220)
 }
 
 /* =========================
@@ -823,6 +831,20 @@ function renderCards() {
 
   const allViewed = areAllCardsViewed()
 
+  cardsGrid.classList.remove(
+    "playersCountSmall",
+    "playersCountMedium",
+    "playersCountLarge"
+  )
+
+  if (players.length <= 6) {
+    cardsGrid.classList.add("playersCountSmall")
+  } else if (players.length <= 8) {
+    cardsGrid.classList.add("playersCountMedium")
+  } else {
+    cardsGrid.classList.add("playersCountLarge")
+  }
+
   if (allViewed) {
     cardsGrid.classList.add("hidden")
 
@@ -842,7 +864,7 @@ function renderCards() {
       }
 
       if (gameStageTitle) {
-        gameStageTitle.textContent = "ابدأ القرعة "
+        gameStageTitle.textContent = "ابدأ القرعة"
       }
     }
 
@@ -887,25 +909,25 @@ function renderCards() {
   cardsGrid.innerHTML = ""
 
   players.forEach((player, index) => {
-  const card = document.createElement("button")
+    const card = document.createElement("button")
 
-  card.className = `playerCard ${player.viewed ? "viewed" : ""}`
-  card.textContent = player.viewed ? `${player.name} ✓` : player.name
+    card.className = `playerCard ${player.viewed ? "viewed" : ""}`
+    card.textContent = player.viewed ? `${player.name} ✓` : player.name
 
-  if (player.viewed) {
-    card.disabled = true
-  } else {
-    card.onclick = () => showSecret(index)
-  }
+    if (player.viewed) {
+      card.disabled = true
+    } else {
+      card.onclick = () => showSecret(index)
+    }
 
-  cardsGrid.appendChild(card)
-})
+    cardsGrid.appendChild(card)
+  })
 }
+
 
 function showSecret(index) {
   const player = players[index]
 
-  // يمنع فتح البطاقة إذا تمت مشاهدتها
   if (!player || player.viewed) {
     return
   }
@@ -914,6 +936,7 @@ function showSecret(index) {
 
   const settings = getGameSettings()
 
+  const secretScreen = document.getElementById("secretScreen")
   const secretName = document.getElementById("secretName")
   const secretCategory = document.getElementById("secretCategory")
   const secretWord = document.getElementById("secretWord")
@@ -939,17 +962,38 @@ function showSecret(index) {
     secretWord.classList.remove("imposterWord")
   }
 
-  document.getElementById("secretScreen").style.display = "flex"
+  if (secretScreen) {
+    secretScreen.classList.remove("closing")
+    secretScreen.classList.add("show")
+    secretScreen.style.display = "flex"
+  }
 }
 
 function hideSecret() {
+  const secretScreen = document.getElementById("secretScreen")
+
   if (currentViewedIndex !== null) {
     players[currentViewedIndex].viewed = true
   }
 
   currentViewedIndex = null
 
-  document.getElementById("secretScreen").style.display = "none"
+  if (secretScreen) {
+    secretScreen.classList.remove("show")
+    secretScreen.classList.add("closing")
+
+    setTimeout(() => {
+      secretScreen.classList.remove("closing")
+      secretScreen.style.display = "none"
+
+      renderCards()
+      updateCounter()
+      updateGameButtons()
+      saveGameState()
+    }, 230)
+
+    return
+  }
 
   renderCards()
   updateCounter()
@@ -1061,7 +1105,15 @@ function closeTurnDrawScreen() {
   const startVotingBtn = document.getElementById("startVotingBtn")
   const gameStageTitle = document.getElementById("gameStageTitle")
 
-  if (screen) screen.style.display = "none"
+  if (screen) {
+    screen.classList.remove("show")
+    screen.classList.add("closing")
+
+    setTimeout(() => {
+      screen.classList.remove("closing")
+      screen.style.display = "none"
+    }, 220)
+  }
 
   if (turnDrawDone) {
     if (turnBox) turnBox.classList.remove("hidden")
@@ -1072,6 +1124,7 @@ function closeTurnDrawScreen() {
 
   saveGameState()
 }
+
 function startVotingStage() {
   const settings = getGameSettings()
   const startVotingBtn = document.getElementById("startVotingBtn")
@@ -1161,6 +1214,7 @@ function revealImposter() {
 
   const gameStageTitle = document.getElementById("gameStageTitle")
   const votingPanel = document.getElementById("votingPanel")
+  const revealScreen = document.getElementById("revealScreen")
 
   if (gameStageTitle) gameStageTitle.textContent = "تم كشف الإمبوستر"
   if (votingPanel) votingPanel.classList.add("hidden")
@@ -1175,7 +1229,11 @@ function revealImposter() {
     <span style="color:#7F2020">${scoreResultText}</span>
   `
 
-  document.getElementById("revealScreen").style.display = "flex"
+  if (revealScreen) {
+    revealScreen.classList.remove("closing")
+    revealScreen.classList.add("show")
+    revealScreen.style.display = "flex"
+  }
 
   renderScoreBoard()
   updateGameButtons()
@@ -1183,7 +1241,17 @@ function revealImposter() {
 }
 
 function closeReveal() {
-  document.getElementById("revealScreen").style.display = "none"
+  const revealScreen = document.getElementById("revealScreen")
+
+  if (!revealScreen) return
+
+  revealScreen.classList.remove("show")
+  revealScreen.classList.add("closing")
+
+  setTimeout(() => {
+    revealScreen.classList.remove("closing")
+    revealScreen.style.display = "none"
+  }, 220)
 }
 
 function newRound() {
@@ -1264,3 +1332,13 @@ function hideWarning() {
 renderFixedPlayers()
 applyGameSettingsToUI()
 loadExcelFromProject()
+function lockAppHeight() {
+  document.documentElement.style.setProperty(
+    "--app-height",
+    `${window.innerHeight}px`
+  )
+}
+
+window.addEventListener("resize", lockAppHeight)
+window.addEventListener("orientationchange", lockAppHeight)
+lockAppHeight()

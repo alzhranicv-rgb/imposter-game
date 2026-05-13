@@ -2,7 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
 
   <title>لعبة الإمبوستر</title>
 
@@ -18,208 +22,357 @@
     <!-- شاشة البداية -->
     <section id="setupScreen" class="screen active">
 
-      <div class="hero">
-        <div class="badge">لعبة جماعية</div>
+      <div class="setupShell">
 
-        <h1 class="title">الإمبوستر</h1>
+        <div class="hero">
+          <div class="heroGlow"></div>
 
-        
-      </div>
+          
 
-      <div class="panel">
+          <h1 class="title">الإمبوستر</h1>
 
-        <div class="statusCard">
-          <div class="statusIcon">📁</div>
-
-          <div>
-            <h3>ملف الكلمات</h3>
-            <p id="fileInfo">جاري تحميل الكلمات...</p>
-          </div>
+          
         </div>
 
-        <div class="settingsGrid">
-          <div class="settingCard">
-            <div>
-              <h3>إظهار الفئة</h3>
-              
+        <div class="panel">
+
+          <div class="statusCard">
+            <div class="statusIcon">📁</div>
+
+            <div class="statusText">
+              <h3>ملف الكلمات</h3>
+              <p id="fileInfo">جاري تحميل الكلمات...</p>
+            </div>
+          </div>
+
+          <div class="settingsGrid">
+
+            <div class="settingCard">
+              <div class="settingText">
+                <h3>إظهار الفئة</h3>
+                <p>للإمبوستر أثناء مشاهدة البطاقة</p>
+              </div>
+
+              <label class="switch" aria-label="إظهار الفئة للإمبوستر">
+                <input
+                  id="showCategoryForImposter"
+                  type="checkbox"
+                  checked
+                  onchange="saveGameSettings()"
+                >
+                <span class="slider"></span>
+              </label>
             </div>
 
-            <label class="switch">
+            <div class="settingCard">
+              <div class="settingText">
+                <h3>التصويت</h3>
+                <p>تفعيل مرحلة التصويت بعد القرعة</p>
+              </div>
+
+              <label class="switch" aria-label="تفعيل التصويت">
+                <input
+                  id="enableVoting"
+                  type="checkbox"
+                  checked
+                  onchange="saveGameSettings()"
+                >
+                <span class="slider"></span>
+              </label>
+            </div>
+
+          </div>
+
+          <div id="warning" class="warning"></div>
+
+          <div class="formGroup">
+
+            <div class="playersHeader">
+              <div>
+                <label>قائمة اللاعبين</label>
+                <p>أضف أو احذف الأسماء قبل بداية اللعبة</p>
+              </div>
+
+              <div id="playersCountBadge" class="playersCountBadge">
+                0 لاعبين
+              </div>
+            </div>
+
+            <div class="addFixedPlayerBox">
               <input
-                id="showCategoryForImposter"
-                type="checkbox"
-                checked
-                onchange="saveGameSettings()"
-              >
-              <span class="slider"></span>
-            </label>
-          </div>
+                id="newPlayerName"
+                type="text"
+                placeholder="اكتب اسم لاعب جديد"
+                autocomplete="off"
+              />
 
-          <div class="settingCard">
-            <div>
-              <h3>التصويت</h3>
-              
+              <button
+                type="button"
+                class="secondaryBtn"
+                onclick="addFixedPlayer()"
+              >
+                إضافة
+              </button>
             </div>
 
-            <label class="switch">
-              <input
-                id="enableVoting"
-                type="checkbox"
-                checked
-                onchange="saveGameSettings()"
-              >
-              <span class="slider"></span>
-            </label>
+            <div id="fixedPlayersList" class="fixedPlayersList"></div>
+
           </div>
+
+          <button
+            type="button"
+            class="startBtn"
+            onclick="startGame()"
+          >
+            ابدأ اللعبة
+          </button>
+
         </div>
-
-        <div id="warning" class="warning"></div>
-
-        <div class="formGroup">
-          <div class="playersHeader">
-            <div>
-              <label>قائمة اللاعبين</label>
-              
-            </div>
-
-            <div id="playersCountBadge" class="playersCountBadge">0 لاعبين</div>
-          </div>
-
-          <div class="addFixedPlayerBox">
-            <input id="newPlayerName" type="text" placeholder="اكتب اسم لاعب جديد" />
-            <button class="secondaryBtn" onclick="addFixedPlayer()">إضافة</button>
-          </div>
-
-          <div id="fixedPlayersList" class="fixedPlayersList"></div>
-        </div>
-
-        <button class="startBtn" onclick="startGame()">
-          ابدأ اللعبة
-        </button>
 
       </div>
 
     </section>
 
+
     <!-- شاشة اللعب -->
     <section id="gameScreen" class="screen">
 
-      <div class="gameHeader">
-        <div>
-          <div class="roundTopRow">
-  <button class="scoreRoundBtn" onclick="openScoreBoard()" aria-label="عرض النتائج">
-    🏆
-  </button>
+      <div class="gameShell">
 
-  <div class="roundLabel">
-    الجولة الحالية
-  </div>
+        <div class="gameHeader">
 
-  <button class="homeRoundBtn" onclick="resetGame()" aria-label="الرجوع للرئيسية">
-    🏠
-  </button>
-</div>
-          <h2 id="gameStageTitle">اختار اسمك وشوف بطاقتك بسرية</h2>
-        </div>
+          <div class="gameHeaderMain">
 
-        <div class="playersCounter">
-          <div class="counterTitle">تمت مشاهدة البطاقات</div>
+            <div class="roundTopRow">
 
-          <div class="counterNumbers">
-            <span id="viewedCounter">0</span>
-            <span class="counterSlash">/</span>
-            <span id="totalCounter">0</span>
+              <button
+                type="button"
+                class="scoreRoundBtn"
+                onclick="openScoreBoard()"
+                aria-label="عرض النتائج"
+              >
+                🏆
+              </button>
+
+              <div class="roundLabel">
+                الجولة الحالية
+              </div>
+
+              <button
+                type="button"
+                class="homeRoundBtn"
+                onclick="resetGame()"
+                aria-label="الرجوع للرئيسية"
+              >
+                🏠
+              </button>
+
+            </div>
+
+            <h2 id="gameStageTitle">
+              اختار اسمك وشوف بطاقتك بسرية
+            </h2>
+
           </div>
+
+          <div class="playersCounter">
+            <div class="counterTitle">
+              تمت مشاهدة البطاقات
+            </div>
+
+            <div class="counterNumbers">
+              <span id="viewedCounter">0</span>
+              <span class="counterSlash">/</span>
+              <span id="totalCounter">0</span>
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      <div id="cardsGrid" class="cardsGrid"></div>
+        <div class="gameBody">
 
-      <div id="turnBox" class="turnBox hidden">
-  <button id="drawTurnBtn" class="drawTurnBtn" onclick="startTurnDraw()">
-    القرعة
-  </button>
+          <div id="cardsGrid" class="cardsGrid"></div>
 
-  <button id="startVotingBtn" class="startVotingBtn hidden" onclick="startVotingStage()">
-    بدء التصويت
-  </button>
-</div>
+          <div id="turnBox" class="turnBox hidden">
 
-      <div id="votingPanel" class="votingPanel hidden">
-  <div class="votingHeader">
-    <div class="votingBadge">مرحلة التصويت</div>
-    <h3 id="currentVoterTitle">تصويت اللاعب</h3>
-    <p>اختر الشخص اللي تتوقع أنه الإمبوستر</p>
-  </div>
+            <div class="turnBoxIcon">🎲</div>
 
-  <div id="votingChoices" class="votingChoices"></div>
+            <div class="turnBoxText">
+              <h3>جاهزين للقرعة؟</h3>
+              <p>
+                بعد ما كل لاعب يشوف بطاقته، ابدأ القرعة لاختيار صاحب الدور
+              </p>
+            </div>
 
-  <button id="nextVoteBtn" class="nextVoteBtn hidden" onclick="goToNextVoter()">
-    اللي بعده
-  </button>
-</div>
+            <button
+              type="button"
+              id="drawTurnBtn"
+              class="drawTurnBtn"
+              onclick="startTurnDraw()"
+            >
+              القرعة
+            </button>
 
-      <div class="actionsBar">
-        <button id="revealBtn" class="dangerBtn hidden" onclick="revealImposter()">
-          كشف الإمبوستر
-        </button>
+            <button
+              type="button"
+              id="startVotingBtn"
+              class="startVotingBtn hidden"
+              onclick="startVotingStage()"
+            >
+              بدء التصويت
+            </button>
 
-        <button id="scoreBtn" class="scoreBtn hidden" onclick="openScoreBoard()">
-          النتائج
-        </button>
+          </div>
 
-        <button id="newRoundBtn" class="primaryBtn hidden" onclick="newRound()">
-          جولة جديدة
-        </button>
+          <div id="votingPanel" class="votingPanel hidden">
 
-        <button id="resetBtn" class="lightBtn hidden" onclick="resetGame()">
-          لعبة جديدة
-        </button>
+            <div class="votingHeader">
+              <div class="votingBadge">مرحلة التصويت</div>
+
+              <h3 id="currentVoterTitle">
+                تصويت اللاعب
+              </h3>
+
+              <p>
+                اختر الشخص اللي تتوقع أنه الإمبوستر
+              </p>
+            </div>
+
+            <div id="votingChoices" class="votingChoices"></div>
+
+            <button
+              type="button"
+              id="nextVoteBtn"
+              class="nextVoteBtn hidden"
+              onclick="goToNextVoter()"
+            >
+              اللي بعده
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="actionsBar">
+
+          <button
+            type="button"
+            id="revealBtn"
+            class="dangerBtn hidden"
+            onclick="revealImposter()"
+          >
+            كشف الإمبوستر
+          </button>
+
+          <button
+            type="button"
+            id="scoreBtn"
+            class="scoreBtn hidden"
+            onclick="openScoreBoard()"
+          >
+            النتائج
+          </button>
+
+          <button
+            type="button"
+            id="newRoundBtn"
+            class="primaryBtn hidden"
+            onclick="newRound()"
+          >
+            جولة جديدة
+          </button>
+
+          <button
+            type="button"
+            id="resetBtn"
+            class="lightBtn hidden"
+            onclick="resetGame()"
+          >
+            لعبة جديدة
+          </button>
+
+        </div>
+
       </div>
 
     </section>
 
   </main>
 
+
   <!-- شاشة الكلمة السرية -->
   <div id="secretScreen" class="secretScreen">
+
     <div class="secretCard">
 
       <div class="secretTop">
-        <div id="secretName" class="secretName"></div>
-        <div class="secretHint">لا تخلي أحد يشوف الشاشة</div>
+        <div>
+          <div class="secretMiniLabel">بطاقة اللاعب</div>
+          <div id="secretName" class="secretName"></div>
+        </div>
+
+        <div class="secretLock">🔒</div>
+      </div>
+
+      <div class="secretHint">
+        لا تخلي أحد يشوف الشاشة
       </div>
 
       <div id="secretCategory" class="secretCategory"></div>
+
       <div id="secretWord" class="secretWord"></div>
 
-      <button class="hideBtn" onclick="hideSecret()">
+      <button
+        type="button"
+        class="hideBtn"
+        onclick="hideSecret()"
+      >
         إخفاء البطاقة
       </button>
 
     </div>
+
   </div>
+
 
   <!-- شاشة كشف الإمبوستر -->
   <div id="revealScreen" class="revealScreen">
+
     <div class="revealCard">
 
-      <div class="revealTitle">كشف الإمبوستر</div>
+      <div class="revealTitle">
+        كشف الإمبوستر
+      </div>
+
+      <div class="revealIcon">🕵️</div>
 
       <div id="revealName" class="revealName"></div>
+
       <div id="revealDetails" class="revealDetails"></div>
 
-      <button class="hideBtn" onclick="closeReveal()">
+      <button
+        type="button"
+        class="hideBtn"
+        onclick="closeReveal()"
+      >
         إغلاق
       </button>
+
     </div>
+
   </div>
+
 
   <!-- شاشة القرعة -->
   <div id="turnDrawScreen" class="turnDrawScreen">
+
     <div class="turnDrawCard">
 
-      <div class="turnDrawTitle">القرعة</div>
+      <div class="turnDrawTitle">
+        القرعة
+      </div>
+
+      <div class="turnDrawIcon">🎲</div>
 
       <div id="turnDrawName" class="turnDrawName">
         جاهز؟
@@ -229,27 +382,62 @@
         انتظر حتى تتوقف القرعة
       </div>
 
-      <button id="closeTurnDrawBtn" class="hideBtn hidden" onclick="closeTurnDrawScreen()">
+      <button
+        type="button"
+        id="closeTurnDrawBtn"
+        class="hideBtn hidden"
+        onclick="closeTurnDrawScreen()"
+      >
         متابعة
       </button>
 
     </div>
+
   </div>
 
-  <!-- شاشة النتائج -->
-  <div id="scoreScreen" class="scoreScreen" onclick="closeScoreBoard()">
-    <div class="scoreCard" onclick="event.stopPropagation()">
 
-      <div class="scoreBoardTitle">لوحة النتائج</div>
+  <!-- شاشة النتائج -->
+  <div
+    id="scoreScreen"
+    class="scoreScreen"
+    onclick="closeScoreBoard()"
+  >
+
+    <div
+      class="scoreCard"
+      onclick="event.stopPropagation()"
+    >
+
+      <div class="scoreTop">
+        <div>
+          <div class="scoreMiniLabel">الترتيب الحالي</div>
+          <div class="scoreBoardTitle">لوحة النتائج</div>
+        </div>
+
+        <button
+          type="button"
+          class="scoreCloseBtn"
+          onclick="closeScoreBoard()"
+          aria-label="إغلاق النتائج"
+        >
+          ×
+        </button>
+      </div>
+
       <div id="scoreList" class="scoreList"></div>
 
-      <button class="hideBtn" onclick="closeScoreBoard()">
+      <button
+        type="button"
+        class="hideBtn"
+        onclick="closeScoreBoard()"
+      >
         إغلاق
       </button>
 
     </div>
+
   </div>
-  
+
 
   <script src="script.js"></script>
 
