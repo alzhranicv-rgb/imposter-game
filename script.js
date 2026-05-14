@@ -64,17 +64,17 @@ async function loadExcelFromProject() {
     loadUsedWords()
 
     if (wordsList.length === 0) {
-      fileInfo.textContent = "لم يتم تحميل كلمات"
+      if (fileInfo) fileInfo.textContent = "لم يتم تحميل كلمات"
       showWarning("ملف Excel لا يحتوي على كلمات واضحة")
       return
     }
 
-    fileInfo.textContent = `تم تحميل ${wordsList.length} كلمة تلقائيًا`
+    if (fileInfo) fileInfo.textContent = `تم تحميل ${wordsList.length} كلمة تلقائيًا`
     hideWarning()
 
     restoreGameState()
   } catch (error) {
-    fileInfo.textContent = "تعذر تحميل ملف الكلمات"
+    if (fileInfo) fileInfo.textContent = "تعذر تحميل ملف الكلمات"
     showWarning("تأكد أن ملف categorized_words.xlsx موجود بجانب index.html")
     console.error(error)
   }
@@ -192,30 +192,7 @@ function restoreGameState() {
 }
 
 function renderRestoredGame() {
-  const secretScreen = document.getElementById("secretScreen")
-  const revealScreen = document.getElementById("revealScreen")
-  const scoreScreen = document.getElementById("scoreScreen")
-  const turnDrawScreen = document.getElementById("turnDrawScreen")
-
-  if (secretScreen) {
-    secretScreen.classList.remove("show", "closing")
-    secretScreen.style.display = "none"
-  }
-
-  if (revealScreen) {
-    revealScreen.classList.remove("show", "closing")
-    revealScreen.style.display = "none"
-  }
-
-  if (scoreScreen) {
-    scoreScreen.classList.remove("show", "closing")
-    scoreScreen.style.display = "none"
-  }
-
-  if (turnDrawScreen) {
-    turnDrawScreen.classList.remove("show", "closing")
-    turnDrawScreen.style.display = "none"
-  }
+  closeAllOverlaysInstant()
 
   renderCards()
   updateCounter()
@@ -232,7 +209,15 @@ function updateGameStageAfterRestore() {
   const votingPanel = document.getElementById("votingPanel")
   const settings = getGameSettings()
 
-  if (turnBox) turnBox.classList.add("hidden")
+  const turnBoxIcon = document.querySelector(".turnBoxIcon")
+  const turnBoxTitle = document.querySelector(".turnBoxText h3")
+  const turnBoxText = document.querySelector(".turnBoxText p")
+
+  if (turnBox) {
+    turnBox.classList.add("hidden")
+    turnBox.classList.remove("drawStage", "voteReadyStage", "stageLeaving")
+  }
+
   if (drawTurnBtn) drawTurnBtn.classList.add("hidden")
   if (startVotingBtn) startVotingBtn.classList.add("hidden")
   if (votingPanel) votingPanel.classList.add("hidden")
@@ -243,16 +228,46 @@ function updateGameStageAfterRestore() {
   }
 
   if (!turnDrawDone && !imposterRevealed) {
-    if (turnBox) turnBox.classList.remove("hidden")
-    if (drawTurnBtn) drawTurnBtn.classList.remove("hidden")
-    if (gameStageTitle) gameStageTitle.textContent = "ابدأ القرعة"
+    if (turnBox) {
+      turnBox.classList.remove("hidden")
+      turnBox.classList.add("drawStage")
+    }
+
+    if (turnBoxIcon) turnBoxIcon.textContent = "🎲"
+    if (turnBoxTitle) turnBoxTitle.textContent = "مرحلة القرعة"
+    if (turnBoxText) {
+      turnBoxText.textContent = "كل البطاقات انفتحت. الآن اختار اللاعب اللي يبدأ الكلام بدون ما ينكشف السر."
+    }
+
+    if (drawTurnBtn) {
+      drawTurnBtn.classList.remove("hidden")
+      drawTurnBtn.textContent = "ابدأ القرعة"
+    }
+
+    if (gameStageTitle) gameStageTitle.textContent = "كل البطاقات انفتحت"
     return
   }
 
   if (turnDrawDone && !votingStarted && !imposterRevealed) {
-    if (turnBox) turnBox.classList.remove("hidden")
-    if (startVotingBtn) startVotingBtn.classList.remove("hidden")
-    if (gameStageTitle) gameStageTitle.textContent = "ابدأ التصويت"
+    if (turnBox) {
+      turnBox.classList.remove("hidden")
+      turnBox.classList.add("voteReadyStage")
+    }
+
+    if (turnBoxIcon) turnBoxIcon.textContent = "🗳️"
+    if (turnBoxTitle) turnBoxTitle.textContent = "جاهزين للتصويت؟"
+    if (turnBoxText) {
+      turnBoxText.textContent = lastTurnWinnerName
+        ? `بدأ الدور على ${lastTurnWinnerName}. بعد النقاش، ابدأوا التصويت لاختيار الإمبوستر.`
+        : "بعد النقاش، ابدأوا التصويت لاختيار الإمبوستر."
+    }
+
+    if (startVotingBtn) {
+      startVotingBtn.classList.remove("hidden")
+      startVotingBtn.textContent = "بدء التصويت"
+    }
+
+    if (gameStageTitle) gameStageTitle.textContent = "مرحلة ما قبل التصويت"
     return
   }
 
@@ -816,8 +831,15 @@ function startNewRoundWithCurrentPlayers(names) {
   const gameStageTitle = document.getElementById("gameStageTitle")
   const playersCounter = document.querySelector(".playersCounter")
 
-  if (cardsGrid) cardsGrid.classList.remove("hidden")
-  if (turnBox) turnBox.classList.add("hidden")
+  if (cardsGrid) {
+    cardsGrid.classList.remove("hidden", "stageLeaving")
+  }
+
+  if (turnBox) {
+    turnBox.classList.add("hidden")
+    turnBox.classList.remove("drawStage", "voteReadyStage", "stageLeaving")
+  }
+
   if (gameStageTitle) gameStageTitle.textContent = "اختار اسمك وشوف بطاقتك بسرية"
   if (playersCounter) playersCounter.classList.remove("hidden")
 
@@ -840,6 +862,10 @@ function renderCards() {
   const gameStageTitle = document.getElementById("gameStageTitle")
   const playersCounter = document.querySelector(".playersCounter")
 
+  const turnBoxIcon = document.querySelector(".turnBoxIcon")
+  const turnBoxTitle = document.querySelector(".turnBoxText h3")
+  const turnBoxText = document.querySelector(".turnBoxText p")
+
   if (!cardsGrid || !turnBox) return
 
   const allViewed = areAllCardsViewed()
@@ -858,8 +884,15 @@ function renderCards() {
     cardsGrid.classList.add("playersCountLarge")
   }
 
+  turnBox.classList.remove("drawStage", "voteReadyStage", "stageLeaving")
+
   if (allViewed) {
-    cardsGrid.classList.add("hidden")
+    cardsGrid.classList.add("stageLeaving")
+
+    setTimeout(() => {
+      cardsGrid.classList.add("hidden")
+      cardsGrid.classList.remove("stageLeaving")
+    }, 260)
 
     if (playersCounter) {
       playersCounter.classList.add("hidden")
@@ -867,9 +900,17 @@ function renderCards() {
 
     if (!turnDrawDone && !imposterRevealed) {
       turnBox.classList.remove("hidden")
+      turnBox.classList.add("drawStage")
+
+      if (turnBoxIcon) turnBoxIcon.textContent = "🎲"
+      if (turnBoxTitle) turnBoxTitle.textContent = "مرحلة القرعة"
+      if (turnBoxText) {
+        turnBoxText.textContent = "كل البطاقات انفتحت. الآن اختار اللاعب اللي يبدأ الكلام بدون ما ينكشف السر."
+      }
 
       if (drawTurnBtn) {
         drawTurnBtn.classList.remove("hidden")
+        drawTurnBtn.textContent = "ابدأ القرعة"
       }
 
       if (startVotingBtn) {
@@ -877,12 +918,21 @@ function renderCards() {
       }
 
       if (gameStageTitle) {
-        gameStageTitle.textContent = "ابدأ القرعة"
+        gameStageTitle.textContent = "كل البطاقات انفتحت"
       }
     }
 
     if (turnDrawDone && !votingStarted && !imposterRevealed) {
       turnBox.classList.remove("hidden")
+      turnBox.classList.add("voteReadyStage")
+
+      if (turnBoxIcon) turnBoxIcon.textContent = "🗳️"
+      if (turnBoxTitle) turnBoxTitle.textContent = "جاهزين للتصويت؟"
+      if (turnBoxText) {
+        turnBoxText.textContent = lastTurnWinnerName
+          ? `بدأ الدور على ${lastTurnWinnerName}. بعد النقاش، ابدأوا التصويت لاختيار الإمبوستر.`
+          : "بعد النقاش، ابدأوا التصويت لاختيار الإمبوستر."
+      }
 
       if (drawTurnBtn) {
         drawTurnBtn.classList.add("hidden")
@@ -890,17 +940,18 @@ function renderCards() {
 
       if (startVotingBtn) {
         startVotingBtn.classList.remove("hidden")
+        startVotingBtn.textContent = "بدء التصويت"
       }
 
       if (gameStageTitle) {
-        gameStageTitle.textContent = "ابدأ التصويت"
+        gameStageTitle.textContent = "مرحلة ما قبل التصويت"
       }
     }
 
     return
   }
 
-  cardsGrid.classList.remove("hidden")
+  cardsGrid.classList.remove("hidden", "stageLeaving")
   turnBox.classList.add("hidden")
 
   if (drawTurnBtn) {
@@ -925,17 +976,30 @@ function renderCards() {
     const card = document.createElement("button")
 
     card.type = "button"
-    card.className = `playerCard ${player.viewed ? "viewed" : ""}`
-    card.innerHTML = `<span>${player.name}</span>`
+    card.className = `playerCard ${player.viewed ? "viewed" : "locked"}`
+    card.innerHTML = `
+  <span>${player.name}</span>
+`
 
     if (player.viewed) {
       card.disabled = true
     } else {
-      card.onclick = () => showSecret(index)
+      card.onclick = () => openPlayerCard(index, card)
     }
 
     cardsGrid.appendChild(card)
   })
+}
+
+function openPlayerCard(index, card) {
+  if (!card || card.classList.contains("opening")) return
+
+  card.classList.add("opening")
+
+  setTimeout(() => {
+    showSecret(index)
+    card.classList.remove("opening")
+  }, 160)
 }
 
 function showSecret(index) {
@@ -948,17 +1012,25 @@ function showSecret(index) {
   const settings = getGameSettings()
 
   const secretScreen = document.getElementById("secretScreen")
+  const secretCard = document.querySelector(".secretCard")
   const secretName = document.getElementById("secretName")
   const secretCategory = document.getElementById("secretCategory")
   const secretWord = document.getElementById("secretWord")
 
   if (!secretScreen || !secretName || !secretCategory || !secretWord) return
 
-  secretName.textContent = player.name
+  if (secretCard) {
+    secretCard.classList.remove("isImposter")
+  }
 
+  secretName.textContent = player.name
   secretWord.classList.remove("imposterWord")
 
   if (player.isImposter) {
+    if (secretCard) {
+      secretCard.classList.add("isImposter")
+    }
+
     secretWord.textContent = "أنت الإمبوستر"
     secretWord.classList.add("imposterWord")
 
@@ -982,6 +1054,7 @@ function showSecret(index) {
 
 function hideSecret() {
   const secretScreen = document.getElementById("secretScreen")
+  const secretCard = document.querySelector(".secretCard")
 
   if (currentViewedIndex !== null) {
     players[currentViewedIndex].viewed = true
@@ -1001,14 +1074,18 @@ function hideSecret() {
   secretScreen.classList.add("closing")
 
   setTimeout(() => {
-    secretScreen.classList.remove("closing")
-    secretScreen.style.display = "none"
+  secretScreen.classList.remove("closing")
+  secretScreen.style.display = "none"
 
-    renderCards()
-    updateCounter()
-    updateGameButtons()
-    saveGameState()
-  }, 180)
+  if (secretCard) {
+    secretCard.classList.remove("isImposter")
+  }
+
+  renderCards()
+  updateCounter()
+  updateGameButtons()
+  saveGameState()
+}, 120)
 }
 
 /* =========================
@@ -1123,6 +1200,10 @@ function closeTurnDrawScreen() {
   const startVotingBtn = document.getElementById("startVotingBtn")
   const gameStageTitle = document.getElementById("gameStageTitle")
 
+  const turnBoxIcon = document.querySelector(".turnBoxIcon")
+  const turnBoxTitle = document.querySelector(".turnBoxText h3")
+  const turnBoxText = document.querySelector(".turnBoxText p")
+
   if (screen) {
     screen.classList.remove("show")
     screen.classList.add("closing")
@@ -1134,10 +1215,27 @@ function closeTurnDrawScreen() {
   }
 
   if (turnDrawDone) {
-    if (turnBox) turnBox.classList.remove("hidden")
+    if (turnBox) {
+      turnBox.classList.remove("hidden", "drawStage")
+      turnBox.classList.add("voteReadyStage")
+    }
+
+    if (turnBoxIcon) turnBoxIcon.textContent = "🗳️"
+    if (turnBoxTitle) turnBoxTitle.textContent = "جاهزين للتصويت؟"
+    if (turnBoxText) {
+      turnBoxText.textContent = lastTurnWinnerName
+        ? `بدأ الدور على ${lastTurnWinnerName}. بعد النقاش، ابدأوا التصويت لاختيار الإمبوستر.`
+        : "بعد النقاش، ابدأوا التصويت لاختيار الإمبوستر."
+    }
+
     if (drawTurnBtn) drawTurnBtn.classList.add("hidden")
-    if (startVotingBtn) startVotingBtn.classList.remove("hidden")
-    if (gameStageTitle) gameStageTitle.textContent = "ابدأ التصويت"
+
+    if (startVotingBtn) {
+      startVotingBtn.classList.remove("hidden")
+      startVotingBtn.textContent = "بدء التصويت"
+    }
+
+    if (gameStageTitle) gameStageTitle.textContent = "مرحلة ما قبل التصويت"
   }
 
   saveGameState()
@@ -1152,7 +1250,28 @@ function startVotingStage() {
   votingStarted = true
 
   if (startVotingBtn) startVotingBtn.classList.add("hidden")
-  if (turnBox) turnBox.classList.add("hidden")
+
+  if (turnBox) {
+    turnBox.classList.add("stageLeaving")
+
+    setTimeout(() => {
+      turnBox.classList.add("hidden")
+      turnBox.classList.remove("voteReadyStage", "drawStage", "stageLeaving")
+
+      if (settings.enableVoting) {
+        if (gameStageTitle) gameStageTitle.textContent = "مرحلة التصويت"
+        currentVoteIndex = 0
+        renderCurrentVote()
+      } else {
+        if (gameStageTitle) gameStageTitle.textContent = "جاهز لكشف الإمبوستر"
+        updateGameButtons()
+      }
+
+      saveGameState()
+    }, 260)
+
+    return
+  }
 
   if (settings.enableVoting) {
     if (gameStageTitle) gameStageTitle.textContent = "مرحلة التصويت"
@@ -1309,25 +1428,7 @@ function resetGame() {
   turnDrawPool = []
   lastTurnWinnerName = ""
 
-  const secretScreen = document.getElementById("secretScreen")
-  const revealScreen = document.getElementById("revealScreen")
-  const turnDrawScreen = document.getElementById("turnDrawScreen")
-
-  if (secretScreen) {
-    secretScreen.classList.remove("show", "closing")
-    secretScreen.style.display = "none"
-  }
-
-  if (revealScreen) {
-    revealScreen.classList.remove("show", "closing")
-    revealScreen.style.display = "none"
-  }
-
-  if (turnDrawScreen) {
-    turnDrawScreen.classList.remove("show", "closing")
-    turnDrawScreen.style.display = "none"
-  }
-
+  closeAllOverlaysInstant()
   closeScoreBoard()
   resetTurnBox()
   clearGameState()
@@ -1381,6 +1482,29 @@ function hideWarning() {
   warning.style.display = "none"
 }
 
+function closeAllOverlaysInstant() {
+  const overlays = [
+    "secretScreen",
+    "revealScreen",
+    "turnDrawScreen",
+    "scoreScreen"
+  ]
+
+  overlays.forEach((id) => {
+    const el = document.getElementById(id)
+
+    if (!el) return
+
+    el.classList.remove("show", "closing")
+    el.style.display = "none"
+  })
+
+  const secretCard = document.querySelector(".secretCard")
+  if (secretCard) {
+    secretCard.classList.remove("isImposter")
+  }
+}
+
 function lockAppHeight() {
   document.documentElement.style.setProperty(
     "--app-height",
@@ -1394,8 +1518,8 @@ function lockAppHeight() {
 
 window.addEventListener("resize", lockAppHeight)
 window.addEventListener("orientationchange", lockAppHeight)
-lockAppHeight()
 
+lockAppHeight()
 renderFixedPlayers()
 applyGameSettingsToUI()
 loadExcelFromProject()

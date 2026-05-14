@@ -7,40 +7,42 @@
 }
 
 /* =========================================================
-   IMPOSTER - FINAL SOFT PREMIUM UI
+   IMPOSTER - FAST PREMIUM 2026 UI
+   نسخة خفيفة بدون لاق
 ========================================================= */
 
 :root {
   --app-height: 100dvh;
 
-  --bg: #f5f1e8;
-  --bg-soft: #ebe4d7;
+  --bg: #f5f0e7;
+  --bg-2: #e7dccd;
 
   --card: #fffdf8;
-  --card-soft: #f8f4ec;
+  --card-2: #f6efe4;
+  --card-3: #eee2d2;
 
-  --main: #7f9277;
-  --main-dark: #5f7159;
-  --main-soft: #dfe8d8;
+  --text: #272b24;
+  --muted: rgba(39, 43, 36, 0.58);
 
-  --accent: #d9b978;
-  --accent-soft: #f5e6c4;
+  --main: #74866b;
+  --main-dark: #53634d;
+  --main-soft: #e1eadc;
 
-  --danger: #9d3b35;
-  --danger-dark: #7f2020;
-  --danger-soft: #f4dedb;
+  --gold: #d7b56d;
+  --gold-soft: #f6e8c4;
 
-  --text: #2f332b;
-  --muted: rgba(47, 51, 43, 0.58);
-  --line: rgba(47, 51, 43, 0.10);
+  --danger: #9b4940;
+  --danger-dark: #7f302b;
+  --danger-soft: #f1d9d3;
 
-  --shadow: 0 14px 34px rgba(47, 51, 43, 0.10);
-  --shadow-soft: 0 8px 18px rgba(47, 51, 43, 0.07);
-  --inner: inset 0 -3px 0 rgba(47, 51, 43, 0.05);
+  --line: rgba(39, 43, 36, 0.10);
 
-  --r-xl: 30px;
-  --r-lg: 24px;
-  --r-md: 18px;
+  --shadow: 0 12px 28px rgba(39, 43, 36, 0.10);
+  --shadow-soft: 0 7px 16px rgba(39, 43, 36, 0.07);
+
+  --radius-xl: 30px;
+  --radius-lg: 24px;
+  --radius-md: 18px;
 }
 
 * {
@@ -61,9 +63,9 @@ body {
   height: var(--app-height);
   color: var(--text);
   background:
-    radial-gradient(circle at 18% 8%, rgba(127, 146, 119, 0.18), transparent 28%),
-    radial-gradient(circle at 85% 18%, rgba(217, 185, 120, 0.18), transparent 28%),
-    linear-gradient(180deg, var(--bg), var(--bg-soft));
+    radial-gradient(circle at 16% 8%, rgba(116, 134, 107, 0.16), transparent 28%),
+    radial-gradient(circle at 88% 14%, rgba(215, 181, 109, 0.18), transparent 28%),
+    linear-gradient(180deg, var(--bg), var(--bg-2));
   display: flex;
   justify-content: center;
   align-items: stretch;
@@ -81,21 +83,20 @@ input {
 
 button {
   border: 0;
-  min-height: 48px;
-  border-radius: var(--r-md);
-  padding: 11px 15px;
-  font-size: 15px;
-  font-weight: 1000;
   cursor: pointer;
+  min-height: 48px;
+  padding: 11px 15px;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 1000;
   white-space: nowrap;
   transition:
-    transform 0.14s ease,
-    box-shadow 0.14s ease,
-    opacity 0.14s ease;
+    transform 0.12s ease,
+    opacity 0.12s ease;
 }
 
 button:active {
-  transform: scale(0.965);
+  transform: scale(0.97);
 }
 
 button:disabled {
@@ -112,6 +113,8 @@ button:disabled {
 ========================================================= */
 
 .app {
+  position: relative;
+  z-index: 1;
   width: min(100%, 480px);
   height: 100%;
   overflow: hidden;
@@ -126,10 +129,10 @@ button:disabled {
 
 .screen.active {
   display: block;
-  animation: screenEnter 0.28s ease both;
+  animation: screenIn 0.22s ease both;
 }
 
-@keyframes screenEnter {
+@keyframes screenIn {
   from {
     opacity: 0;
     transform: translateY(8px);
@@ -155,7 +158,7 @@ button:disabled {
 
 .hero {
   text-align: center;
-  padding: 4px 4px 0;
+  padding: 6px 4px 0;
 }
 
 .badge {
@@ -164,46 +167,54 @@ button:disabled {
   justify-content: center;
   background: var(--card);
   color: var(--main-dark);
-  border: 1px solid rgba(127, 146, 119, 0.18);
-  padding: 7px 15px;
+  border: 1px solid rgba(116, 134, 107, 0.16);
+  padding: 7px 16px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 1000;
-  margin-bottom: 6px;
+  margin-bottom: 7px;
   box-shadow: var(--shadow-soft);
 }
 
 .title {
   margin: 0;
   color: var(--text);
-  font-size: clamp(46px, 15vw, 68px);
-  line-height: 0.9;
+  font-size: clamp(52px, 16vw, 76px);
+  line-height: 0.88;
   font-weight: 1000;
   letter-spacing: -1.5px;
 }
 
+.title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 7px;
+  margin: 9px auto 0;
+  border-radius: 999px;
+  background: var(--main);
+}
+
 .heroText {
-  margin: 7px auto 0;
-  width: min(100%, 340px);
+  width: min(100%, 350px);
+  margin: 8px auto 0;
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: 14px;
   line-height: 1.45;
   font-weight: 900;
 }
 
 .panel {
   min-height: 0;
+  overflow: hidden;
   display: grid;
   grid-template-rows: auto auto auto auto 1fr auto;
   gap: 8px;
-  overflow: hidden;
-  background: rgba(255, 253, 248, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: var(--r-xl);
   padding: 11px;
+  border-radius: var(--radius-xl);
+  background: rgba(255, 253, 248, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.78);
   box-shadow: var(--shadow);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 }
 
 /* =========================================================
@@ -211,26 +222,27 @@ button:disabled {
 ========================================================= */
 
 .statusCard {
-  display: flex;
+  display: grid;
+  grid-template-columns: 46px 1fr;
   align-items: center;
   gap: 10px;
+  min-height: 64px;
+  padding: 10px;
+  border-radius: 22px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 22px;
-  padding: 10px;
   box-shadow: var(--shadow-soft);
 }
 
 .statusIcon {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  border-radius: 16px;
+  width: 46px;
+  height: 46px;
+  border-radius: 17px;
   display: grid;
   place-items: center;
   background: var(--main-soft);
   color: var(--main-dark);
-  font-size: 22px;
+  font-size: 23px;
 }
 
 .statusText {
@@ -240,14 +252,14 @@ button:disabled {
 .statusCard h3 {
   margin: 0 0 3px;
   color: var(--text);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 1000;
 }
 
 .statusCard p {
   margin: 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.35;
   font-weight: 900;
   overflow: hidden;
@@ -266,14 +278,15 @@ button:disabled {
 }
 
 .settingCard {
+  min-height: 74px;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 8px;
+  padding: 10px;
+  border-radius: 21px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 10px;
   box-shadow: var(--shadow-soft);
 }
 
@@ -284,24 +297,24 @@ button:disabled {
 .settingCard h3 {
   margin: 0;
   color: var(--text);
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 1000;
 }
 
 .settingCard p {
-  margin: 3px 0 0;
+  margin: 4px 0 0;
   color: var(--muted);
-  font-size: 10.5px;
-  line-height: 1.3;
+  font-size: 11.5px;
+  line-height: 1.35;
   font-weight: 900;
 }
 
 .switch {
   position: relative;
+  width: 48px;
+  min-width: 48px;
+  height: 29px;
   display: block;
-  width: 46px;
-  min-width: 46px;
-  height: 28px;
 }
 
 .switch input {
@@ -311,23 +324,22 @@ button:disabled {
 .slider {
   position: absolute;
   inset: 0;
-  background: #ddd1c1;
+  background: #ddd2c3;
   border-radius: 999px;
-  box-shadow: inset 0 -2px 0 rgba(47, 51, 43, 0.08);
-  transition: 0.18s ease;
+  transition: 0.15s ease;
 }
 
 .slider::before {
   content: "";
   position: absolute;
-  width: 22px;
-  height: 22px;
+  width: 23px;
+  height: 23px;
   top: 3px;
   right: 3px;
-  border-radius: 50%;
+  border-radius: 999px;
   background: var(--card);
-  box-shadow: 0 4px 10px rgba(47, 51, 43, 0.16);
-  transition: 0.18s ease;
+  box-shadow: 0 3px 8px rgba(39, 43, 36, 0.16);
+  transition: 0.15s ease;
 }
 
 .switch input:checked + .slider {
@@ -335,7 +347,7 @@ button:disabled {
 }
 
 .switch input:checked + .slider::before {
-  transform: translateX(-18px);
+  transform: translateX(-19px);
 }
 
 /* =========================================================
@@ -344,18 +356,18 @@ button:disabled {
 
 .warning {
   display: none;
+  padding: 10px 13px;
+  border-radius: 18px;
   background: var(--danger-soft);
-  color: var(--danger);
-  border: 1px solid rgba(157, 59, 53, 0.16);
-  border-radius: 17px;
-  padding: 10px 12px;
-  font-size: 13px;
-  font-weight: 1000;
+  color: var(--danger-dark);
+  border: 1px solid rgba(127, 48, 43, 0.14);
   text-align: center;
+  font-size: 14px;
+  font-weight: 1000;
 }
 
 /* =========================================================
-   SETUP PLAYERS
+   PLAYERS SETUP
 ========================================================= */
 
 .formGroup {
@@ -367,79 +379,80 @@ button:disabled {
 }
 
 .playersHeader {
+  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 11px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 9px 10px;
+  border-radius: 21px;
+  padding: 10px 12px;
   box-shadow: var(--shadow-soft);
 }
 
 .playersHeader label {
   display: block;
-  margin: 0 0 2px;
+  margin: 0 0 3px;
   color: var(--text);
-  font-size: 14.5px;
+  font-size: 16px;
   font-weight: 1000;
 }
 
 .playersHeader p {
   margin: 0;
   color: var(--muted);
-  font-size: 10.5px;
+  font-size: 12px;
   line-height: 1.35;
   font-weight: 900;
 }
 
 .playersCountBadge {
-  padding: 7px 11px;
+  padding: 8px 12px;
   border-radius: 999px;
   background: var(--main-soft);
   color: var(--main-dark);
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 1000;
   white-space: nowrap;
 }
 
 .addFixedPlayerBox {
   display: grid;
-  grid-template-columns: 1fr 76px;
-  gap: 7px;
+  grid-template-columns: 1fr 82px;
+  gap: 8px;
 }
 
 input {
   width: 100%;
-  min-height: 45px;
+  min-height: 49px;
   border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 10px 13px;
+  border-radius: 18px;
+  padding: 11px 14px;
   outline: 0;
   background: var(--card);
   color: var(--text);
   box-shadow: var(--shadow-soft);
-  font-size: 14px;
-  font-weight: 900;
   text-align: center;
+  font-size: 16px;
+  font-weight: 900;
 }
 
 input::placeholder {
-  color: rgba(47, 51, 43, 0.36);
+  color: rgba(39, 43, 36, 0.36);
 }
 
 input:focus {
-  border-color: rgba(127, 146, 119, 0.45);
+  border-color: rgba(116, 134, 107, 0.45);
   box-shadow:
-    0 0 0 4px rgba(127, 146, 119, 0.12),
+    0 0 0 4px rgba(116, 134, 107, 0.12),
     var(--shadow-soft);
 }
 
 .secondaryBtn {
   color: var(--card);
   background: var(--main);
-  box-shadow: 0 10px 20px rgba(127, 146, 119, 0.18);
+  box-shadow: 0 10px 18px rgba(116, 134, 107, 0.18);
 }
 
 .fixedPlayersList {
@@ -448,7 +461,7 @@ input:focus {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-content: start;
-  gap: 7px;
+  gap: 8px;
   padding: 1px 1px 5px;
   scrollbar-width: none;
 }
@@ -458,22 +471,22 @@ input:focus {
 }
 
 .fixedPlayerItem {
-  min-height: 45px;
+  min-height: 49px;
   display: grid;
-  grid-template-columns: 1fr 32px;
+  grid-template-columns: 1fr 34px;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
+  padding: 7px;
+  border-radius: 18px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 6px;
   box-shadow: var(--shadow-soft);
 }
 
 .fixedPlayerName {
   min-width: 0;
   color: var(--text);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 1000;
   text-align: center;
   overflow: hidden;
@@ -482,27 +495,25 @@ input:focus {
 }
 
 .deleteFixedPlayerBtn {
-  width: 32px;
-  height: 32px;
-  min-height: 32px;
+  width: 34px;
+  height: 34px;
+  min-height: 34px;
   padding: 0;
-  border-radius: 12px;
   display: grid;
   place-items: center;
+  border-radius: 13px;
   color: var(--card);
   background: var(--danger);
-  font-size: 19px;
+  font-size: 21px;
 }
 
 .startBtn {
   width: 100%;
-  min-height: 54px;
+  min-height: 57px;
   color: var(--card);
   background: var(--main);
-  box-shadow:
-    0 14px 28px rgba(127, 146, 119, 0.22),
-    var(--inner);
-  font-size: 18px;
+  box-shadow: 0 14px 24px rgba(116, 134, 107, 0.22);
+  font-size: 20px;
 }
 
 .startBtn::after {
@@ -510,61 +521,59 @@ input:focus {
 }
 
 /* =========================================================
-   GAME SCREEN
+   GAME
 ========================================================= */
 
 .gameShell {
   height: 100%;
+  overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 8px;
-  overflow: hidden;
 }
 
 .gameHeader {
   display: grid;
   gap: 8px;
-  background: rgba(255, 253, 248, 0.84);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 26px;
-  padding: 9px;
+  padding: 10px;
+  border-radius: 27px;
+  background: rgba(255, 253, 248, 0.90);
+  border: 1px solid rgba(255, 255, 255, 0.76);
   box-shadow: var(--shadow);
   text-align: center;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
 }
 
 .gameHeaderMain {
   display: grid;
   justify-items: center;
-  gap: 6px;
+  gap: 7px;
 }
 
 .roundTopRow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
 }
 
 .roundLabel {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 7px 15px;
+  border-radius: 999px;
   background: var(--main-soft);
   color: var(--main-dark);
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 1000;
 }
 
 .homeRoundBtn,
 .scoreRoundBtn {
-  width: 31px;
-  height: 31px;
-  min-width: 31px;
-  min-height: 31px;
+  width: 35px;
+  height: 35px;
+  min-width: 35px;
+  min-height: 35px;
   padding: 0;
   border-radius: 999px;
   display: grid;
@@ -572,32 +581,32 @@ input:focus {
   background: var(--card);
   color: var(--text);
   border: 1px solid var(--line);
-  font-size: 14px;
   box-shadow: var(--shadow-soft);
+  font-size: 16px;
 }
 
 .gameHeader h2 {
   margin: 0;
   color: var(--text);
-  font-size: clamp(19px, 5.2vw, 25px);
-  line-height: 1.15;
+  font-size: clamp(22px, 6vw, 29px);
+  line-height: 1.18;
   font-weight: 1000;
 }
 
 .playersCounter {
-  min-height: 48px;
-  border-radius: 18px;
+  min-height: 52px;
+  border-radius: 20px;
+  background: var(--main-soft);
+  color: var(--text);
   display: grid;
   place-items: center;
   align-content: center;
-  gap: 3px;
-  background: var(--main-soft);
-  color: var(--text);
+  gap: 4px;
 }
 
 .counterTitle {
-  color: rgba(47, 51, 43, 0.58);
-  font-size: 10px;
+  font-size: 12px;
+  color: rgba(39, 43, 36, 0.58);
   font-weight: 1000;
 }
 
@@ -606,19 +615,19 @@ input:focus {
   align-items: center;
   justify-content: center;
   direction: ltr;
-  gap: 6px;
+  gap: 7px;
   color: var(--text);
-  font-size: 23px;
+  font-size: 26px;
   line-height: 1;
   font-weight: 1000;
 }
 
 .counterSlash {
-  color: rgba(47, 51, 43, 0.48);
+  color: rgba(39, 43, 36, 0.46);
 }
 
 /* =========================================================
-   PLAYER CARDS
+   PLAYER CARDS - FAST NAME ONLY
 ========================================================= */
 
 .gameBody {
@@ -632,9 +641,9 @@ input:focus {
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  overflow: hidden;
+  gap: 9px;
   align-content: stretch;
+  overflow: hidden;
 }
 
 .cardsGrid.playersCountSmall {
@@ -653,54 +662,52 @@ input:focus {
   position: relative;
   min-height: 0;
   height: 100%;
-  border-radius: 24px;
-  padding: 12px 8px 20px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 28px;
+  padding: 10px;
   color: var(--text);
   background:
-    radial-gradient(circle at 20% 15%, rgba(255,255,255,.86), transparent 28%),
-    linear-gradient(180deg, #fffdf8 0%, #f3eee4 100%);
-  border: 1.5px solid rgba(127, 146, 119, 0.14);
+    linear-gradient(145deg, #fffdf8 0%, #f2e8d8 100%);
   box-shadow:
-    0 12px 24px rgba(47, 51, 43, 0.10),
-    inset 0 -4px 0 rgba(47, 51, 43, 0.04);
+    0 13px 26px rgba(39, 43, 36, 0.11),
+    inset 0 1px 0 rgba(255,255,255,.75);
   display: grid;
   place-items: center;
   text-align: center;
-  font-size: clamp(17px, 4.8vw, 23px);
+  font-size: clamp(21px, 5.6vw, 29px);
   font-weight: 1000;
-  overflow: hidden;
-  animation: cardIn 0.25s ease both;
+  letter-spacing: -0.35px;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transition: transform 0.12s ease, opacity 0.12s ease;
+  animation: cardInFast 0.18s ease both;
 }
 
 .playerCard span {
   position: relative;
   z-index: 2;
+  width: 100%;
   max-width: 100%;
+  display: block;
+  color: var(--text);
+  font-size: inherit;
+  font-weight: 1000;
+  line-height: 1.15;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.playerCard::before {
-  content: "";
-  position: absolute;
-  inset: 9px;
-  border-radius: 17px;
-  border: 1px dashed rgba(127, 146, 119, 0.18);
-  pointer-events: none;
-}
-
-.playerCard::after {
-  content: "بطاقة";
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: var(--main-soft);
-  color: var(--main-dark);
-  font-size: 9px;
-  font-weight: 1000;
+/* لا خطوط ولا أرقام ولا شارات */
+.playerCard::before,
+.playerCard::after,
+.playerCard span::before,
+.playerCard span::after,
+.cardNumber,
+.lockMark {
+  display: none !important;
+  content: none !important;
 }
 
 .playerCard:active {
@@ -708,27 +715,23 @@ input:focus {
 }
 
 .playerCard.viewed {
-  color: rgba(47, 51, 43, 0.42);
-  background:
-    linear-gradient(180deg, #f3eee4 0%, #ebe5d8 100%);
+  color: rgba(39, 43, 36, 0.42);
+  background: linear-gradient(145deg, #ece3d7 0%, #ded2c1 100%);
   box-shadow:
-    0 6px 14px rgba(47, 51, 43, 0.05),
-    inset 0 -3px 0 rgba(47, 51, 43, 0.03);
+    0 7px 14px rgba(39, 43, 36, 0.06),
+    inset 0 1px 0 rgba(255,255,255,.5);
 }
 
-.playerCard.viewed::after {
-  content: "تمت";
-  top: auto;
-  bottom: 7px;
-  background: #e7dfd2;
-  color: rgba(47, 51, 43, 0.58);
+.playerCard.viewed span {
+  color: rgba(39, 43, 36, 0.44);
 }
 
-.playerCard:disabled {
+.playerCard.opening {
   pointer-events: none;
+  animation: cardOpenFast 0.16s ease both !important;
 }
 
-@keyframes cardIn {
+@keyframes cardInFast {
   from {
     opacity: 0;
     transform: translateY(8px) scale(0.98);
@@ -740,8 +743,20 @@ input:focus {
   }
 }
 
+@keyframes cardOpenFast {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
 /* =========================================================
-   TURN BOX
+   TURN / STAGE
 ========================================================= */
 
 .turnBox {
@@ -749,39 +764,75 @@ input:focus {
   display: grid;
   align-content: center;
   justify-items: center;
-  gap: 11px;
+  gap: 13px;
+  padding: 18px;
+  border-radius: 27px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 26px;
-  padding: 16px;
   box-shadow: var(--shadow);
   text-align: center;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.turnBox.drawStage,
+.turnBox.voteReadyStage {
+  animation: stageInFast 0.22s ease both;
+}
+
+.turnBox.stageLeaving {
+  animation: stageOutFast 0.18s ease both;
+}
+
+@keyframes stageInFast {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes stageOutFast {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
 }
 
 .turnBoxIcon {
-  width: 68px;
-  height: 68px;
+  width: 78px;
+  height: 78px;
+  border-radius: 27px;
   display: grid;
   place-items: center;
-  border-radius: 22px;
   background: var(--main-soft);
   color: var(--main-dark);
-  font-size: 34px;
+  font-size: 38px;
 }
 
 .turnBoxText h3 {
-  margin: 0 0 5px;
+  margin: 0 0 6px;
   color: var(--text);
-  font-size: 22px;
+  font-size: clamp(29px, 8vw, 40px);
+  line-height: 1.08;
   font-weight: 1000;
 }
 
 .turnBoxText p {
+  width: min(100%, 350px);
   margin: 0 auto;
-  width: min(100%, 320px);
   color: var(--muted);
-  font-size: 12.5px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.6;
   font-weight: 900;
 }
 
@@ -789,10 +840,13 @@ input:focus {
 .startVotingBtn,
 .nextVoteBtn {
   width: 100%;
-  max-width: 330px;
+  max-width: 360px;
+  min-height: 56px;
+  border-radius: 22px;
   color: var(--card);
   background: var(--main);
-  box-shadow: 0 12px 24px rgba(127, 146, 119, 0.18);
+  box-shadow: 0 12px 22px rgba(116, 134, 107, 0.20);
+  font-size: 18px;
 }
 
 /* =========================================================
@@ -802,14 +856,14 @@ input:focus {
 .votingPanel {
   height: 100%;
   min-height: 0;
+  overflow: hidden;
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 10px;
-  overflow: hidden;
+  padding: 13px;
+  border-radius: 27px;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 26px;
-  padding: 12px;
   box-shadow: var(--shadow);
 }
 
@@ -819,28 +873,28 @@ input:focus {
 
 .votingBadge {
   display: inline-flex;
+  padding: 7px 14px;
+  border-radius: 999px;
   background: var(--main-soft);
   color: var(--main-dark);
-  border-radius: 999px;
-  padding: 6px 13px;
-  margin-bottom: 7px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 1000;
+  margin-bottom: 8px;
 }
 
 .votingHeader h3 {
-  margin: 0 0 4px;
+  margin: 0 0 5px;
   color: var(--text);
-  font-size: 21px;
+  font-size: 24px;
   line-height: 1.15;
   font-weight: 1000;
 }
 
 .votingHeader p {
-  margin: 0 auto;
   width: min(100%, 320px);
+  margin: 0 auto;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13.5px;
   line-height: 1.45;
   font-weight: 900;
 }
@@ -861,15 +915,15 @@ input:focus {
 }
 
 .voteChoiceBtn {
-  min-height: 50px;
-  border-radius: 17px;
+  min-height: 54px;
+  border-radius: 18px;
+  background: var(--card-2);
   color: var(--text);
-  background: var(--card-soft);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-soft);
   white-space: normal;
   line-height: 1.2;
-  font-size: 14.5px;
+  font-size: 16px;
 }
 
 .voteChoiceBtn.selected {
@@ -886,22 +940,20 @@ input:focus {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  background: rgba(255, 253, 248, 0.78);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 22px;
-  padding: 6px;
+  padding: 7px;
+  border-radius: 23px;
+  background: rgba(255, 253, 248, 0.90);
+  border: 1px solid rgba(255,255,255,.76);
   box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
 }
 
 .actionsBar button {
   flex: 1;
   min-width: 0;
-  min-height: 42px;
+  min-height: 43px;
   border-radius: 16px;
   padding: 8px 5px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .primaryBtn {
@@ -922,7 +974,7 @@ input:focus {
 
 .scoreBtn {
   color: var(--text);
-  background: var(--accent-soft);
+  background: var(--gold-soft);
 }
 
 /* =========================================================
@@ -943,9 +995,7 @@ input:focus {
     max(14px, env(safe-area-inset-top))
     14px
     max(14px, env(safe-area-inset-bottom));
-  background: rgba(47, 51, 43, 0.42);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(39, 43, 36, 0.42);
 }
 
 .turnDrawScreen {
@@ -961,7 +1011,7 @@ input:focus {
 .turnDrawScreen.show,
 .scoreScreen.show {
   display: flex !important;
-  animation: overlayIn 0.22s ease both;
+  animation: overlayInFast 0.16s ease both;
 }
 
 .secretScreen.closing,
@@ -969,15 +1019,15 @@ input:focus {
 .turnDrawScreen.closing,
 .scoreScreen.closing {
   display: flex !important;
-  animation: overlayOut 0.18s ease both;
+  animation: overlayOutFast 0.12s ease both;
 }
 
-@keyframes overlayIn {
+@keyframes overlayInFast {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes overlayOut {
+@keyframes overlayOutFast {
   from { opacity: 1; }
   to { opacity: 0; }
 }
@@ -989,42 +1039,33 @@ input:focus {
   width: min(100%, 420px);
   max-height: 100%;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 20% 10%, rgba(255,255,255,.82), transparent 28%),
-    linear-gradient(180deg, #fffdf8 0%, #f5f1e8 100%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 32px;
-  padding: 18px;
+  padding: 20px;
   text-align: center;
-  box-shadow:
-    0 28px 80px rgba(47, 51, 43, 0.25),
-    inset 0 1px 0 rgba(255,255,255,.9);
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.82);
+  box-shadow: 0 26px 70px rgba(39, 43, 36, 0.24);
+  transform: translateZ(0);
 }
 
-.secretScreen.show .secretCard {
-  animation: secretCardIn 0.34s cubic-bezier(.2,.9,.2,1) both;
-}
-
-.secretScreen.closing .secretCard {
-  animation: secretCardOut 0.18s ease both;
-}
-
-.turnDrawScreen.show .turnDrawCard,
+.secretScreen.show .secretCard,
 .revealScreen.show .revealCard,
+.turnDrawScreen.show .turnDrawCard,
 .scoreScreen.show .scoreCard {
-  animation: modalIn 0.28s ease both;
+  animation: modalInFast 0.18s ease both;
 }
 
-.turnDrawScreen.closing .turnDrawCard,
+.secretScreen.closing .secretCard,
 .revealScreen.closing .revealCard,
+.turnDrawScreen.closing .turnDrawCard,
 .scoreScreen.closing .scoreCard {
-  animation: modalOut 0.18s ease both;
+  animation: modalOutFast 0.12s ease both;
 }
 
-@keyframes secretCardIn {
+@keyframes modalInFast {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.94);
+    transform: translateY(12px) scale(0.97);
   }
 
   to {
@@ -1033,7 +1074,7 @@ input:focus {
   }
 }
 
-@keyframes secretCardOut {
+@keyframes modalOutFast {
   from {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -1041,31 +1082,7 @@ input:focus {
 
   to {
     opacity: 0;
-    transform: translateY(10px) scale(0.96);
-  }
-}
-
-@keyframes modalIn {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.94);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes modalOut {
-  from {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-
-  to {
-    opacity: 0;
-    transform: translateY(10px) scale(0.96);
+    transform: translateY(8px) scale(0.98);
   }
 }
 
@@ -1077,93 +1094,121 @@ input:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 11px;
-  margin-bottom: 8px;
+  gap: 12px;
+  margin-bottom: 10px;
   text-align: right;
 }
 
 .secretMiniLabel {
   display: inline-flex;
+  padding: 6px 13px;
+  border-radius: 999px;
+  margin-bottom: 7px;
   background: var(--main-soft);
   color: var(--main-dark);
-  border-radius: 999px;
-  padding: 6px 12px;
-  margin-bottom: 7px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 1000;
 }
 
 .secretName {
   color: var(--text);
-  font-size: 30px;
+  font-size: 34px;
   line-height: 1.15;
   font-weight: 1000;
 }
 
 .secretLock {
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  border-radius: 16px;
-  display: grid;
-  place-items: center;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 18px;
   background: var(--main-soft);
   color: var(--main-dark);
-  font-size: 22px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
 }
 
 .secretHint {
   margin: 0 0 12px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 900;
 }
 
 .secretCategory {
   display: inline-flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  margin: 4px 0 14px;
+  padding: 9px 17px;
+  border-radius: 999px;
   background: var(--main-soft);
   color: var(--main-dark);
-  border-radius: 999px;
-  padding: 9px 16px;
-  margin: 4px 0 12px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 1000;
 }
 
 .secretWord {
-  min-height: 140px;
+  position: relative;
+  min-height: 150px;
   display: grid;
   place-items: center;
-  background:
-    radial-gradient(circle at 20% 15%, rgba(255,255,255,.76), transparent 28%),
-    linear-gradient(180deg, #fffdf8 0%, #f2ecdf 100%);
-  color: var(--main-dark);
-  border: 1px solid rgba(127, 146, 119, 0.14);
+  margin: 8px 0 16px;
+  padding: 16px;
   border-radius: 28px;
-  margin: 8px 0 14px;
-  padding: 14px;
-  font-size: clamp(40px, 11vw, 62px);
-  line-height: 1.1;
+  color: var(--main-dark);
+  background: var(--card-2);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+  font-size: clamp(46px, 12vw, 72px);
+  line-height: 1.08;
   font-weight: 1000;
-  box-shadow:
-    0 10px 22px rgba(47, 51, 43, 0.08),
-    inset 0 -4px 0 rgba(47, 51, 43, 0.04);
+  overflow: hidden;
 }
 
-.secretWord.imposterWord {
-  color: var(--card);
-  background:
-    linear-gradient(180deg, #b34b43 0%, #9d3b35 100%);
-  box-shadow:
-    0 12px 22px rgba(157, 59, 53, 0.18),
-    inset 0 -4px 0 rgba(0,0,0,.08);
+.secretCard.isImposter {
+  background: var(--card) !important;
+  color: var(--text) !important;
+}
+
+.secretCard.isImposter .secretMiniLabel,
+.secretCard.isImposter .secretCategory {
+  color: var(--main-dark) !important;
+  background: var(--main-soft) !important;
+}
+
+.secretCard.isImposter .secretName,
+.secretCard.isImposter .secretHint {
+  color: var(--text) !important;
+}
+
+.secretCard.isImposter .secretWord.imposterWord {
+  color: var(--danger-dark) !important;
+  background: linear-gradient(145deg, #fffdf8, #f6e8c4) !important;
+  border: 1px solid rgba(127, 48, 43, 0.12) !important;
+  box-shadow: var(--shadow-soft) !important;
+}
+
+.secretCard.isImposter .secretWord.imposterWord::after {
+  content: "خلك طبيعي";
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(127, 48, 43, 0.08);
+  color: rgba(127, 48, 43, 0.72);
+  border: 1px solid rgba(127, 48, 43, 0.10);
+  font-size: 11px;
+  font-weight: 1000;
+  line-height: 1;
 }
 
 .hideBtn {
   width: 100%;
-  min-height: 52px;
+  min-height: 54px;
   color: var(--card);
   background: var(--main);
 }
@@ -1176,60 +1221,60 @@ input:focus {
 .turnDrawTitle,
 .scoreBoardTitle {
   display: inline-flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  padding: 8px 18px;
+  margin-bottom: 13px;
+  border-radius: 999px;
   background: var(--main-soft);
   color: var(--main-dark);
-  border-radius: 999px;
-  padding: 8px 17px;
-  margin-bottom: 12px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 1000;
 }
 
 .revealTitle {
   background: var(--danger-soft);
-  color: var(--danger);
+  color: var(--danger-dark);
 }
 
 .revealIcon,
 .turnDrawIcon {
-  width: 60px;
-  height: 60px;
-  display: grid;
-  place-items: center;
-  border-radius: 22px;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 13px;
+  border-radius: 23px;
   background: var(--main-soft);
   color: var(--main-dark);
-  font-size: 30px;
-  margin: 0 auto 12px;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
 }
 
 .revealName {
-  color: var(--danger);
-  font-size: clamp(44px, 12vw, 68px);
-  line-height: 1.05;
+  margin-bottom: 13px;
+  color: var(--danger-dark);
+  font-size: clamp(52px, 14vw, 78px);
+  line-height: 1.04;
   font-weight: 1000;
-  margin-bottom: 12px;
 }
 
 .revealDetails {
-  background: var(--card-soft);
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 25px;
+  background: var(--card-2);
   border: 1px solid var(--line);
-  border-radius: 24px;
-  padding: 14px;
   color: var(--text);
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1.7;
   font-weight: 1000;
-  margin-bottom: 14px;
 }
 
 .turnDrawCard {
-  min-height: min(330px, 80dvh);
+  min-height: min(350px, 82dvh);
   display: grid;
   align-content: center;
-  gap: 13px;
+  gap: 14px;
 }
 
 .turnDrawTitle {
@@ -1241,27 +1286,27 @@ input:focus {
 }
 
 .turnDrawName {
-  min-height: 132px;
+  min-height: 145px;
   display: grid;
   place-items: center;
-  background: var(--card-soft);
-  border: 1px solid var(--line);
-  border-radius: 26px;
+  padding: 18px;
+  border-radius: 30px;
+  background: var(--card-2);
   color: var(--main-dark);
-  padding: 16px;
-  font-size: clamp(44px, 12vw, 68px);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+  font-size: clamp(48px, 13vw, 74px);
   line-height: 1.08;
   font-weight: 1000;
-  box-shadow: var(--shadow-soft);
 }
 
 .turnDrawName.spinning {
-  animation: nameChange 0.12s ease both;
+  animation: nameTickFast 0.08s ease both;
 }
 
-@keyframes nameChange {
+@keyframes nameTickFast {
   from {
-    opacity: 0.5;
+    opacity: 0.45;
     transform: translateY(5px);
   }
 
@@ -1272,23 +1317,26 @@ input:focus {
 }
 
 .turnDrawName.winner {
-  background: var(--accent-soft);
+  background: var(--gold-soft);
   color: var(--text);
-  animation: winnerPulse 0.8s ease-in-out infinite;
+  animation: winnerPulseFast 0.7s ease-in-out infinite;
 }
 
-@keyframes winnerPulse {
+@keyframes winnerPulseFast {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.045); }
+  50% { transform: scale(1.035); }
 }
 
 .turnDrawHint {
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 900;
 }
 
-/* Score */
+/* =========================================================
+   SCORE
+========================================================= */
+
 .scoreCard {
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -1305,21 +1353,21 @@ input:focus {
 }
 
 .scoreMiniLabel {
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 900;
 }
 
 .scoreCloseBtn {
-  width: 40px;
-  height: 40px;
-  min-height: 40px;
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
   padding: 0;
-  border-radius: 14px;
-  color: var(--danger);
+  border-radius: 15px;
+  color: var(--danger-dark);
   background: var(--danger-soft);
-  font-size: 26px;
+  font-size: 28px;
 }
 
 .scoreList {
@@ -1327,7 +1375,7 @@ input:focus {
   overflow: auto;
   display: grid;
   align-content: start;
-  gap: 8px;
+  gap: 9px;
   padding: 1px 1px 4px;
   scrollbar-width: none;
 }
@@ -1337,40 +1385,53 @@ input:focus {
 }
 
 .scoreItem {
-  min-height: 52px;
+  min-height: 56px;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
   gap: 10px;
-  background: var(--card-soft);
+  border-radius: 20px;
+  padding: 10px 13px;
+  background: var(--card-2);
   border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 9px 12px;
+  color: var(--text);
   font-weight: 1000;
+  animation: scoreRowInFast 0.18s ease both;
+}
+
+@keyframes scoreRowInFast {
+  from {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .scoreName {
   min-width: 0;
-  color: var(--text);
-  font-size: 16px;
   text-align: right;
+  font-size: 18px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .scorePoints {
-  min-width: 48px;
+  min-width: 52px;
+  padding: 8px 12px;
   border-radius: 999px;
   background: var(--main-soft);
   color: var(--main-dark);
-  padding: 7px 11px;
-  font-size: 15px;
   text-align: center;
+  font-size: 17px;
 }
 
 /* =========================================================
-   IPHONE SMALL
+   IPHONE
 ========================================================= */
 
 @media (max-width: 430px) {
@@ -1387,16 +1448,26 @@ input:focus {
   }
 
   .title {
-    font-size: 50px;
+    font-size: 58px;
   }
 
   .heroText {
-    font-size: 12px;
+    font-size: 14px;
+  }
+
+  .panel,
+  .gameHeader,
+  .turnBox,
+  .votingPanel,
+  .secretCard,
+  .revealCard,
+  .turnDrawCard,
+  .scoreCard {
+    border-radius: 27px;
   }
 
   .panel {
     padding: 9px;
-    border-radius: 27px;
     gap: 7px;
   }
 
@@ -1404,42 +1475,42 @@ input:focus {
     grid-template-columns: 1fr;
     justify-items: center;
     text-align: center;
-    padding: 8px;
+    padding: 9px;
   }
 
   .settingCard p {
     display: none;
   }
 
-  .fixedPlayersList {
-    gap: 6px;
+  .statusCard h3,
+  .settingCard h3,
+  .playersHeader label {
+    font-size: 16px;
   }
 
-  .fixedPlayerItem {
-    min-height: 42px;
+  .statusCard p,
+  .playersHeader p {
+    font-size: 12.5px;
   }
 
   .fixedPlayerName {
-    font-size: 13.5px;
-  }
-
-  .deleteFixedPlayerBtn {
-    width: 30px;
-    height: 30px;
-    min-height: 30px;
+    font-size: 15.5px;
   }
 
   .gameHeader {
     padding: 8px;
-    border-radius: 24px;
+  }
+
+  .gameHeader h2 {
+    font-size: 23px;
   }
 
   .playersCounter {
-    min-height: 44px;
+    min-height: 48px;
   }
 
   .counterNumbers {
-    font-size: 21px;
+    font-size: 24px;
   }
 
   .cardsGrid {
@@ -1447,70 +1518,191 @@ input:focus {
   }
 
   .playerCard {
-    border-radius: 20px;
-    padding: 10px 7px 18px;
-    font-size: 17px;
+    border-radius: 25px;
+    padding: 8px;
+    font-size: 21px;
+  }
+
+  .turnBoxIcon {
+    width: 70px;
+    height: 70px;
+    border-radius: 24px;
+    font-size: 34px;
+  }
+
+  .turnBoxText h3 {
+    font-size: 31px;
+  }
+
+  .turnBoxText p {
+    font-size: 15px;
   }
 
   .actionsBar button {
-    min-height: 40px;
-    font-size: 11.5px;
+    min-height: 41px;
+    font-size: 12.5px;
+  }
+
+  .secretName {
+    font-size: 34px;
   }
 
   .secretWord {
-    min-height: 118px;
+    min-height: 140px;
+    font-size: clamp(46px, 13vw, 68px);
   }
 
   .turnDrawName {
-    min-height: 120px;
+    min-height: 135px;
+    font-size: clamp(48px, 13vw, 70px);
+  }
+
+  .revealName {
+    font-size: clamp(54px, 14vw, 78px);
+  }
+
+  .revealDetails {
+    font-size: 19px;
   }
 }
 
-@media (max-height: 700px) {
+@media (max-width: 430px) and (max-height: 720px) {
   .title {
-    font-size: 44px;
+    font-size: 50px;
   }
 
   .heroText {
     display: none;
   }
 
-  .panel {
-    gap: 6px;
-  }
-
-  .playersHeader p {
-    display: none;
-  }
-
   .gameHeader h2 {
-    font-size: 18px;
-  }
-
-  .playersCounter {
-    min-height: 42px;
-  }
-
-  .counterNumbers {
     font-size: 20px;
   }
 
-  .cardsGrid {
-    gap: 6px;
+  .playersCounter {
+    min-height: 43px;
+  }
+
+  .counterTitle {
+    font-size: 11px;
+  }
+
+  .counterNumbers {
+    font-size: 21px;
   }
 
   .playerCard {
-    font-size: 15.5px;
-    padding: 8px 6px 16px;
+    font-size: 18px;
+    border-radius: 21px;
+    padding: 6px;
   }
 
-  .playerCard::after {
-    font-size: 8px;
-    bottom: 5px;
+  .turnBoxText h3 {
+    font-size: 27px;
+  }
+
+  .turnBoxText p {
+    font-size: 13.5px;
+  }
+
+  .turnBoxIcon {
+    width: 62px;
+    height: 62px;
+    border-radius: 21px;
+    font-size: 30px;
+  }
+
+  .drawTurnBtn,
+  .startVotingBtn {
+    min-height: 48px;
+    font-size: 16px;
   }
 
   .actionsBar button {
     min-height: 38px;
-    font-size: 11px;
+    font-size: 11.5px;
   }
+
+  .secretWord {
+    min-height: 120px;
+    font-size: clamp(40px, 12vw, 60px);
+  }
+
+  .turnDrawName {
+    min-height: 118px;
+    font-size: clamp(42px, 12vw, 62px);
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+/* =========================================================
+   IMPOSTER HINT UNDER CATEGORY + CENTER NEXT VOTE BUTTON
+========================================================= */
+
+/* إخفاء خلك طبيعي من داخل مربع الكلمة */
+.secretCard.isImposter .secretWord.imposterWord::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* وضع خلك طبيعي تحت الفئة */
+.secretCard.isImposter .secretCategory {
+  position: relative !important;
+  margin-bottom: 30px !important;
+}
+
+.secretCard.isImposter .secretCategory::after {
+  content: "خلك طبيعي";
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 24px;
+  padding: 0 12px;
+  border-radius: 999px;
+
+  background: rgba(127, 48, 43, 0.08);
+  color: rgba(127, 48, 43, 0.72);
+  border: 1px solid rgba(127, 48, 43, 0.10);
+
+  font-size: 11px;
+  font-weight: 1000;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* زر اللي بعده تحت الأسماء مباشرة */
+.votingPanel {
+  grid-template-rows: auto auto auto !important;
+  align-content: start !important;
+}
+
+.votingChoices {
+  min-height: auto !important;
+  overflow: visible !important;
+}
+
+.nextVoteBtn {
+  width: min(100%, 260px) !important;
+  max-width: 260px !important;
+  margin: 8px auto 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
 }
