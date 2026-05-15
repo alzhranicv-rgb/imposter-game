@@ -1428,12 +1428,32 @@ function resetGame() {
   turnDrawPool = []
   lastTurnWinnerName = ""
 
-  closeAllOverlaysInstant()
+  // يرجع الأسماء الأساسية فقط
+  const defaultNames = getDefaultFixedPlayers()
+  saveFixedPlayers(defaultNames)
+
+  const secretScreen = document.getElementById("secretScreen")
+  const revealScreen = document.getElementById("revealScreen")
+  const votingPanel = document.getElementById("votingPanel")
+  const cardsGrid = document.getElementById("cardsGrid")
+  const turnBox = document.getElementById("turnBox")
+  const playersCounter = document.querySelector(".playersCounter")
+  const gameStageTitle = document.getElementById("gameStageTitle")
+
+  if (secretScreen) secretScreen.style.display = "none"
+  if (revealScreen) revealScreen.style.display = "none"
+  if (votingPanel) votingPanel.classList.add("hidden")
+  if (cardsGrid) cardsGrid.classList.remove("hidden")
+  if (turnBox) turnBox.classList.add("hidden")
+  if (playersCounter) playersCounter.classList.remove("hidden")
+  if (gameStageTitle) gameStageTitle.textContent = "اختار اسمك وشوف بطاقتك بسرية"
+
   closeScoreBoard()
   resetTurnBox()
   clearGameState()
   renderFixedPlayers()
   renderScoreBoard()
+  updateCounter()
   showScreen("setupScreen")
 }
 
